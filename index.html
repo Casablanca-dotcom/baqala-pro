@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>بقالة برو</title>
+<link rel="manifest" href="./manifest.json" />
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Tahoma,sans-serif}
 body{background:#F2F2F2;padding-bottom:90px;direction:rtl}
@@ -411,6 +412,13 @@ if(produits.length==0){produits=[
 {code:'SANS-002',nom:'بيض بلدي',prix:1.8,prixAchat:1.2,stock:50,sansCode:true}
 ]; save();}
 afficherStock(); afficherPanier(); majCompteur(); majCompteurAchat();
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    });
+  }
 </script>
 </body>
 </html>
