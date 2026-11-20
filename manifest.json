@@ -1,0 +1,11 @@
+{
+  "name": "بقالة برو - Baqala Pro",
+  "short_name": "بقالة برو",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f5f7",
+  "theme_color": "#0f7b3e",
+  "dir": "rtl",
+  "lang": "ar"
+}
