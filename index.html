@@ -10,11 +10,11 @@
 body{background:#F2F2F2;padding-bottom:90px;direction:rtl}
 header{background:#0D7A3E;color:#fff;padding:16px;text-align:center}
 header h1{font-size:24px} header p{font-size:12px;opacity:.9}
-header .client-tag{font-size:12px;margin-top:4px;opacity:.95;font-weight:700}
+header .client-tag{font-size:12px;margin-top:5px;opacity:.95;font-weight:700;background:rgba(0,0,0,.18);display:inline-block;padding:4px 10px;border-radius:10px}
 .home{display:block;padding:16px}
-.home button{width:100%;padding:28px 12px;margin-bottom:14px;border:0;border-radius:18px;font-weight:900;font-size:22px;color:#fff;cursor:pointer}
+.home button{width:100%;padding:24px 12px;margin-bottom:14px;border:0;border-radius:18px;font-weight:900;font-size:21px;color:#fff;cursor:pointer}
 .home button small{display:block;font-size:13px;font-weight:400;opacity:.9;margin-top:4px}
-.home .b-vente{background:#0D7A3E} .home .b-achat{background:#FF7A00} .home .b-stock{background:#111}
+.home .b-vente{background:#0D7A3E} .home .b-achat{background:#FF7A00} .home .b-stock{background:#111} .home .b-credits{background:#B45309}
 .section{display:none;padding:12px} .section.active{display:block}
 .topbar{display:flex;margin-bottom:12px}
 .topbar button.home-btn{width:100%;padding:13px;border:1px solid #ccc;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;background:#fff;color:#111}
@@ -23,7 +23,7 @@ header .client-tag{font-size:12px;margin-top:4px;opacity:.95;font-weight:700}
 .box-total{background:#0D7A3E;color:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
 .box-total .ligne{display:flex;justify-content:space-between;padding:7px 0;font-size:15px}
 .box-total .ligne:last-child{font-weight:900;font-size:17px;border-top:1px solid rgba(255,255,255,.4);margin-top:6px;padding-top:10px}
-input{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin-bottom:8px;font-size:15px;text-align:right}
+input,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin-bottom:8px;font-size:15px;text-align:right;font-family:Arial,Tahoma,sans-serif}
 label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 .btn{width:100%;padding:14px;border:0;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;margin-bottom:8px}
 .btn-green{background:#0D7A3E;color:#fff} .btn-black{background:#111;color:#fff} .btn-orange{background:#FF7A00;color:#fff} .btn-red{background:#E63946;color:#fff} .btn-grey{background:#E9ECEF;color:#111} .btn-blue{background:#007BFF;color:#fff}
@@ -36,7 +36,6 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 .prod.sans-code{border-right:6px solid #007BFF !important}
 .emoji{font-size:28px;min-width:54px;text-align:center}
 .prod-thumb{width:54px;height:54px;border-radius:10px;object-fit:cover;border:1px solid #ddd;display:block}
-.search-thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #ddd;margin-left:10px}
 .info{flex:1} .info b{font-size:16px} .info small{color:#555;font-size:12px;display:block;margin-top:3px}
 .badge-stock{display:inline-block;padding:3px 8px;border-radius:8px;font-weight:900;font-size:12px;margin-top:4px}
 .badge-ok{background:#E6F7ED;color:#0D7A3E}
@@ -55,6 +54,15 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 .switch-box input{width:24px;height:24px;accent-color:#0D7A3E;margin:0}
 .photo-preview-box{text-align:center;margin:8px 0;padding:10px;background:#F8F9FA;border-radius:12px;border:1px dashed #ccc}
 .photo-preview-box img{max-width:130px;max-height:130px;border-radius:12px;border:2px solid #0D7A3E;object-fit:cover}
+.choix-paiement{display:none;background:#F8F9FA;border:2px solid #0D7A3E;border-radius:14px;padding:14px;margin-top:10px}
+.choix-btns{display:flex;gap:8px;margin-top:8px}
+.credit-form{display:none;background:#FFF8E7;border:2px solid #FF7A00;border-radius:14px;padding:14px;margin-top:10px}
+.credit-resume{background:#fff;border-radius:10px;padding:10px;margin:8px 0;border:1px solid #eee}
+.credit-resume div{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;font-weight:700}
+.credit-card{background:#FFF9EB;border:1px solid #F59E0B;border-right:6px solid #FF7A00;border-radius:12px;padding:12px;margin-bottom:10px}
+.credit-card.solde{background:#E6F7ED;border-color:#0D7A3E;border-right-color:#0D7A3E}
+.credit-card b{font-size:15px;display:block;margin-bottom:4px}
+.credit-card small{display:block;color:#444;font-size:12px;margin-top:2px}
 #flash{position:fixed;inset:0;background:#0D7A3E;opacity:0;pointer-events:none;z-index:99}
 #flashEpuise{position:fixed;inset:0;background:#E63946;opacity:0;pointer-events:none;z-index:100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:900;text-align:center}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;z-index:200;transition:.2s;white-space:nowrap}
@@ -84,9 +92,10 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 </header>
 
 <div id="home" class="home">
-<button class="b-vente" onclick="showTab('vente')">🛒 بيع<small>بيع للكليان - سكاني و خلص</small></button>
+<button class="b-vente" onclick="showTab('vente')">🛒 بيع<small>بيع للكليان - سكاني و خرج السلعة</small></button>
 <button class="b-achat" onclick="showTab('achat')">📥 شراء<small>زيد السلع للمخزون</small></button>
 <button class="b-stock" onclick="showTab('stock')">📦 مخزون<small>شوف شحال بقا ليك</small></button>
+<button class="b-credits" onclick="showTab('credits')">📒 سجل الكريديات<small>شوف الكريديات ديال الكليان و شحال بقا ليهم</small></button>
 </div>
 <div id="vente" class="section">
 <div class="topbar"><button class="home-btn" onclick="showTab('home')">🏠 الرئيسية (رجوع)</button></div>
@@ -98,14 +107,51 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div id="statusCamera" style="font-size:12px;text-align:center;color:#666;margin:6px 0"></div>
 <div style="display:flex;gap:6px"><input id="codeVenteManuel" placeholder="6111203004024" style="flex:1"><button class="btn btn-black" style="width:90px" onclick="ajouterVenteManuel()">زيد</button></div>
 </div>
+
 <div class="box">
 <h3>🧾 سلة الكليان</h3>
 <div id="compteurScan" class="compteur">📷 السكانات : 0 | 🛒 السلة : 0</div>
 <div style="display:flex;gap:6px"><button class="btn btn-grey" style="flex:1" onclick="resetCompteur()">🔄 صفر العداد</button><button class="btn btn-grey" style="flex:1" onclick="verifierCompteur()">🔍 واش مطابق ؟</button></div>
 <div id="panier"></div>
 <div class="total">المجموع : <span id="totalVente">0 درهم</span></div>
-<button class="btn btn-green" onclick="encaisser()">✅ خلص</button>
+<button class="btn btn-green" onclick="demarrerSortieMarchandise()">📤 خرج السلعة</button>
 <button class="btn btn-red" onclick="viderPanier()">🗑️ خوي السلة</button>
+
+<div id="choixPaiementBox" class="choix-paiement">
+  <h3 style="margin-bottom:6px">✅ خرجات السلعة — واش كريدي ولا خالص ؟</h3>
+  <small style="color:#555;display:block;margin-bottom:8px">المجموع ديال هاد الخرجة : <b id="montantSortieLabel">0 درهم</b></small>
+  <div class="choix-btns">
+    <button type="button" class="btn btn-green" style="flex:1;margin:0" onclick="validerPaiementCash()">💵 خالص (كاش)</button>
+    <button type="button" class="btn btn-orange" style="flex:1;margin:0" onclick="ouvrirFormulaireCredit()">📒 كريدي</button>
+  </div>
+</div>
+
+<div id="formulaireCreditBox" class="credit-form">
+  <h3 style="margin-bottom:8px">📒 معلومات الكليان — كريدي</h3>
+  <label>اسم الكليان *</label>
+  <input id="creditNomClient" placeholder="مثال: سي محمد / أمينة">
+  <label>السلعة اللي خدا داك نهار *</label>
+  <textarea id="creditArticles" rows="2" placeholder="السلعة والكمية ديال داك نهار"></textarea>
+  <label>شحال خلص اليوم (درهم)</label>
+  <input id="creditPaye" type="number" step="any" min="0" value="0" oninput="majCalculCredit()">
+  <div class="credit-resume">
+    <div><span>المجموع الكلي :</span><span id="creditTotalAff">0 درهم</span></div>
+    <div><span>اللي خلص اليوم :</span><span id="creditPayeAff">0 درهم</span></div>
+    <div style="color:#E63946"><span>شحال بقا ليه :</span><span id="creditResteAff">0 درهم</span></div>
+  </div>
+  <button type="button" class="btn btn-green" onclick="enregistrerCredit()">💾 سجل الكريدي</button>
+  <button type="button" class="btn btn-grey" onclick="annulerCredit()">❌ إلغاء</button>
+</div>
+</div>
+</div>
+
+<div id="credits" class="section">
+<div class="topbar"><button class="home-btn" onclick="showTab('home')">🏠 الرئيسية (رجوع)</button></div>
+<div class="box">
+<h3>📒 سجل الكريديات ديال الكليان</h3>
+<div id="totalCreditsResume" style="background:#FFF3CD;padding:12px;border-radius:10px;font-weight:900;text-align:center;margin-bottom:10px;font-size:16px">مجموع الكريدي الباقي : 0 درهم</div>
+<input id="rechercheCredit" placeholder="🔍 قلب باسم الكليان ولا السلعة..." oninput="afficherCredits()">
+<div id="listeCredits"></div>
 </div>
 </div>
 
@@ -181,12 +227,14 @@ function r2(n){ return Math.round(n*100)/100; }
 
 let produits = lire('epicerie_produits');
 let ventes = lire('epicerie_ventes');
+let credits = lire('epicerie_credits');
 let panier = []; let modeScan='vente'; let audioCtx=null;
 let dernierCode=''; let dernierTemps=0; const DELAI=1000;
 let compteurScans=parseInt(localStorage.getItem('epicerie_compteur_scans')||'0')||0; let scansClient=0;
 let streamActif=null; let scanEnCours=false; let rafId=null; let detector=null;
 let modeRapideAchat = true; let achatSession = []; let compteurAchatSession = 0; let dernierScanAchat = {};
 let photoCouranteForm = '';
+let sortieEnCours = null;
 
 produits.forEach(p=>{
   if(p.prixAchat==null || p.prixAchat==0){ p.prixAchat = r2(p.prix*0.7); }
@@ -259,7 +307,13 @@ function bipEpuise(){
   let f=document.getElementById('flashEpuise'); f.style.opacity=0.92; setTimeout(()=>f.style.opacity=0,800);
   jouerSon(150,0.3,'sawtooth',0.45,0); jouerSon(150,0.3,'sawtooth',0.45,0.35);
 }
-function save(){ecrire('epicerie_produits',JSON.stringify(produits)); ecrire('epicerie_ventes',JSON.stringify(ventes)); afficherStock();}
+function save(){
+  ecrire('epicerie_produits',JSON.stringify(produits));
+  ecrire('epicerie_ventes',JSON.stringify(ventes));
+  ecrire('epicerie_credits',JSON.stringify(credits));
+  afficherStock();
+  afficherCredits();
+}
 function showTab(n){
   stopScan();
   document.getElementById('home').style.display = n=='home' ? 'block' : 'none';
@@ -267,6 +321,7 @@ function showTab(n){
   if(n!=='home'){
     document.getElementById(n).classList.add('active');
     if(n=='stock') afficherStock();
+    if(n=='credits') afficherCredits();
     window.scrollTo(0,0);
   }
 }
@@ -415,17 +470,142 @@ function afficherPanier(){
   let html=''; let total=0;
   panier.forEach((l,i)=>{ let sous=r2(l.prix*l.qte); total+=sous; html+=`<div class="cart-item"><span>${esc(l.nom)} x ${l.qte}</span><span>${sous} درهم <button onclick="retirerDuPanier(${i})">❌</button></span></div>`; });
   document.getElementById('panier').innerHTML=html||'السلة خاوية'; document.getElementById('totalVente').textContent=r2(total)+' درهم';
+  }
+  function retirerDuPanier(i){ let l=panier[i]; if(l) scansClient=Math.max(0,scansClient-l.qte); panier.splice(i,1); afficherPanier(); afficherStock(); majCompteur();}
+function viderPanier(){
+  panier=[]; scansClient=0; sortieEnCours=null;
+  document.getElementById('choixPaiementBox').style.display='none';
+  document.getElementById('formulaireCreditBox').style.display='none';
+  afficherPanier(); afficherStock(); majCompteur();
 }
-function retirerDuPanier(i){ let l=panier[i]; if(l) scansClient=Math.max(0,scansClient-l.qte); panier.splice(i,1); afficherPanier(); afficherStock(); majCompteur();}
-function viderPanier(){panier=[]; scansClient=0; afficherPanier(); afficherStock(); majCompteur();}
-function encaisser(){
+function demarrerSortieMarchandise(){
   if(panier.length==0){alert('السلة خاوية'); return;}
   for(let l of panier){let p=trouver(l.code); if(!p||l.qte>p.stock){bipEpuise(); alert('⛔ '+l.nom+' فات المخزون !'); return;}}
   let total=r2(panier.reduce((s,l)=>s+l.prix*l.qte,0));
-  if(!confirm('المجموع : '+total+' درهم\nتأكد البيع ؟')) return;
-  panier.forEach(l=>{let p=trouver(l.code); p.stock=Math.max(0,p.stock-l.qte); ventes.push({code:l.code,nom:l.nom,qte:l.qte,total:r2(l.prix*l.qte),date:new Date().toISOString()});});
+  let resumeArticles = panier.map(l=>`${l.nom} (x${l.qte})`).join('، ');
+  panier.forEach(l=>{let p=trouver(l.code); p.stock=Math.max(0,p.stock-l.qte);});
+  sortieEnCours = {
+    total: total,
+    articlesTexte: resumeArticles,
+    lignes: panier.map(l=>({code:l.code,nom:l.nom,qte:l.qte,total:r2(l.prix*l.qte)})),
+    date: new Date().toISOString()
+  };
   panier=[]; scansClient=0; dernierCode=''; dernierTemps=0;
-  afficherPanier(); save(); majCompteur(); bipFort('vente'); alert('✅ تخلصتي : '+total+' درهم');
+  afficherPanier(); save(); majCompteur(); bipFort('vente');
+  document.getElementById('montantSortieLabel').textContent = total + ' درهم';
+  document.getElementById('choixPaiementBox').style.display = 'block';
+  document.getElementById('formulaireCreditBox').style.display = 'none';
+  document.getElementById('choixPaiementBox').scrollIntoView({behavior:'smooth'});
+  montrerToast('📤 خرجات السلعة — اختار كريدي ولا خالص');
+}
+function validerPaiementCash(){
+  if(!sortieEnCours) return;
+  sortieEnCours.lignes.forEach(l=>{
+    ventes.push({code:l.code,nom:l.nom,qte:l.qte,total:l.total,type:'cash',date:sortieEnCours.date});
+  });
+  let total = sortieEnCours.total;
+  sortieEnCours = null;
+  document.getElementById('choixPaiementBox').style.display = 'none';
+  document.getElementById('formulaireCreditBox').style.display = 'none';
+  save();
+  alert('✅ خالص كاش : ' + total + ' درهم');
+}
+function ouvrirFormulaireCredit(){
+  if(!sortieEnCours) return;
+  document.getElementById('formulaireCreditBox').style.display = 'block';
+  document.getElementById('creditNomClient').value = '';
+  document.getElementById('creditArticles').value = sortieEnCours.articlesTexte;
+  document.getElementById('creditPaye').value = '0';
+  majCalculCredit();
+  document.getElementById('formulaireCreditBox').scrollIntoView({behavior:'smooth'});
+  document.getElementById('creditNomClient').focus();
+}
+function majCalculCredit(){
+  if(!sortieEnCours) return;
+  let total = sortieEnCours.total;
+  let paye = parseFloat(document.getElementById('creditPaye').value);
+  if(isNaN(paye) || paye < 0) paye = 0;
+  if(paye > total) paye = total;
+  let reste = r2(total - paye);
+  document.getElementById('creditTotalAff').textContent = total + ' درهم';
+  document.getElementById('creditPayeAff').textContent = r2(paye) + ' درهم';
+  document.getElementById('creditResteAff').textContent = reste + ' درهم';
+}
+function enregistrerCredit(){
+  if(!sortieEnCours) return;
+  let nomClient = (document.getElementById('creditNomClient').value || '').trim();
+  let articles = (document.getElementById('creditArticles').value || '').trim() || sortieEnCours.articlesTexte;
+  let paye = parseFloat(document.getElementById('creditPaye').value);
+  if(!nomClient){ alert('عمر اسم الكليان'); document.getElementById('creditNomClient').focus(); return; }
+  if(isNaN(paye) || paye < 0){ paye = 0; }
+  let total = sortieEnCours.total;
+  if(paye > total){ alert('المبلغ اللي خلص كبر من المجموع'); return; }
+  let reste = r2(total - paye);
+  credits.unshift({
+    id: 'CR-' + Date.now(),
+    client: nomClient,
+    articles: articles,
+    total: total,
+    paye: r2(paye),
+    reste: reste,
+    date: new Date().toLocaleDateString('fr-MA')
+  });
+  sortieEnCours.lignes.forEach(l=>{
+    ventes.push({code:l.code,nom:l.nom,qte:l.qte,total:l.total,type:'credit',client:nomClient,date:sortieEnCours.date});
+  });
+  sortieEnCours = null;
+  document.getElementById('choixPaiementBox').style.display = 'none';
+  document.getElementById('formulaireCreditBox').style.display = 'none';
+  save();
+  alert(`📒 تسجل الكريدي ديال ${nomClient}\nالمجموع : ${total} درهم | خلص : ${r2(paye)} درهم | بقا ليه : ${reste} درهم`);
+}
+function annulerCredit(){
+  document.getElementById('formulaireCreditBox').style.display = 'none';
+}
+function payerVersementCredit(id){
+  let cr = credits.find(c=>c.id===id);
+  if(!cr || cr.reste <= 0) return;
+  let saisi = prompt(`الكليان : ${cr.client}\nالباقي عليه : ${cr.reste} درهم\nشحال غادي يخلص دابا ؟`, String(cr.reste));
+  if(saisi === null) return;
+  let montant = parseFloat(saisi);
+  if(isNaN(montant) || montant <= 0){ alert('دخل مبلغ صحيح'); return; }
+  if(montant > cr.reste) montant = cr.reste;
+  cr.paye = r2(cr.paye + montant);
+  cr.reste = r2(Math.max(0, cr.total - cr.paye));
+  save();
+  alert(`✅ تخلص ${r2(montant)} درهم — الباقي : ${cr.reste} درهم`);
+}
+function supprimerCredit(id){
+  if(!confirm('تحيد هاد السطر من الكريديات ؟')) return;
+  credits = credits.filter(c=>c.id!==id);
+  save();
+}
+function afficherCredits(){
+  let el = document.getElementById('listeCredits');
+  let totEl = document.getElementById('totalCreditsResume');
+  if(!el || !totEl) return;
+  let q = (document.getElementById('rechercheCredit') ? document.getElementById('rechercheCredit').value : '').toLowerCase();
+  let totalReste = r2(credits.reduce((s,c)=>s+(c.reste||0),0));
+  totEl.textContent = `مجموع الكريدي الباقي : ${totalReste} درهم`;
+  let liste = credits.filter(c => (c.client||'').toLowerCase().includes(q) || (c.articles||'').toLowerCase().includes(q));
+  if(liste.length === 0){
+    el.innerHTML = '<p style="text-align:center;color:#999">ما كاين حتى كريدي مسجل.</p>';
+    return;
+  }
+  let html = '';
+  liste.forEach(c=>{
+    let solde = c.reste <= 0;
+    html += `<div class="credit-card ${solde?'solde':''}">
+      <b>👤 ${esc(c.client)} <span style="font-size:11px;color:#666;font-weight:400">(${esc(c.date)})</span></b>
+      <small>🛒 السلعة : <b>${esc(c.articles)}</b></small>
+      <small>💰 المجموع : <b>${c.total} درهم</b> | ✅ خلص : <b>${c.paye} درهم</b> | ⏳ الباقي : <b style="color:${solde?'#0D7A3E':'#E63946'}">${c.reste} درهم</b></small>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        ${!solde ? `<button type="button" class="btn btn-green" style="padding:8px;font-size:13px;margin:0;flex:1" onclick="payerVersementCredit('${c.id}')">💳 خلص الباقي / جزء</button>` : `<span style="flex:1;font-size:13px;font-weight:800;color:#0D7A3E;padding:8px 0">✅ خالص بالكامل</span>`}
+        <button type="button" class="btn btn-grey" style="padding:8px;font-size:12px;margin:0;width:75px" onclick="supprimerCredit('${c.id}')">🗑️ مسح</button>
+      </div>
+    </div>`;
+  });
+  el.innerHTML = html;
 }
 function preparerAchat(code){
   bipFort('achat'); showTab('achat'); document.getElementById('formProduit').style.display='block';
@@ -474,8 +654,11 @@ function enregistrerProduit(){
 }
 function exporterDonnees(){
   let data = {
+    clientRef: REF_CLIENT,
+    boutique: NOM_BOUTIQUE_CLIENT,
     produits: produits,
     ventes: ventes,
+    credits: credits,
     date: new Date().toISOString()
   };
   let blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
@@ -496,6 +679,7 @@ function importerDonnees(inp){
       if(!confirm('غادي تعوض المخزون الحالي بهاد النسخة. متأكد ؟')) return;
       produits = data.produits;
       ventes = Array.isArray(data.ventes) ? data.ventes : [];
+      credits = Array.isArray(data.credits) ? data.credits : [];
       save();
       alert('✅ تم استرجاع ' + produits.length + ' منتج بنجاح !');
     }catch(err){
@@ -505,17 +689,20 @@ function importerDonnees(inp){
   };
   reader.readAsText(file);
 }
-function resetTout(){if(confirm('تمسح كلشي ؟')){produits=[]; ventes=[]; panier=[]; scansClient=0; compteurScans=0; achatSession=[]; compteurAchatSession=0; save(); afficherPanier(); majCompteur(); majCompteurAchat();}}
+function resetTout(){if(confirm('تمسح كلشي ؟')){produits=[]; ventes=[]; credits=[]; panier=[]; scansClient=0; compteurScans=0; achatSession=[]; compteurAchatSession=0; sortieEnCours=null; save(); afficherPanier(); majCompteur(); majCompteurAchat();}}
 
 const DUREE_ESSAI_MS = 7 * 24 * 60 * 60 * 1000;
-const NOM_BOUTIQUE_CLIENT = "بقالة الكرم";
-const CODE_SECRET_CLIENT = "CLIENT-KARAM-2026";
+const NOM_BOUTIQUE_CLIENT = "بقالة الوفاء";
+const REF_CLIENT = "CL-001";
+const CODE_SECRET_CLIENT = "WAFA-2026-99";
+const CLE_LICENCE_CLIENT = "epicerie_activee_" + REF_CLIENT;
 
 function afficherInfosClient(){
   let h = document.getElementById('nomClientHeader');
   let b = document.getElementById('nomClientBlocage');
-  if(h && NOM_BOUTIQUE_CLIENT) h.textContent = '🏪 ' + NOM_BOUTIQUE_CLIENT;
-  if(b && NOM_BOUTIQUE_CLIENT) b.textContent = 'النسخة الخاصة بـ : ' + NOM_BOUTIQUE_CLIENT;
+  let label = `🏪 ${NOM_BOUTIQUE_CLIENT} (${REF_CLIENT})`;
+  if(h && NOM_BOUTIQUE_CLIENT) h.textContent = label;
+  if(b && NOM_BOUTIQUE_CLIENT) b.textContent = 'نسخة خاصة بـ : ' + label;
 }
 function bloquerApplication(msg){
   stopScan();
@@ -528,16 +715,16 @@ function bloquerApplication(msg){
 function verifierCodeActivation(){
   let saisie = (document.getElementById('codeActivation').value || '').trim();
   if(saisie === CODE_SECRET_CLIENT){
-    localStorage.setItem('epicerie_activee', 'oui');
+    localStorage.setItem(CLE_LICENCE_CLIENT, 'oui');
     document.getElementById('ecranExpire').style.display = 'none';
-    alert('✅ تم تفعيل التطبيق بنجاح');
+    alert('✅ تم تفعيل التطبيق بنجاح لـ ' + NOM_BOUTIQUE_CLIENT);
   } else {
     alert('❌ كود التفعيل غالط');
   }
 }
 function verifierLicence(){
   afficherInfosClient();
-  if(localStorage.getItem('epicerie_activee') === 'oui') return;
+  if(localStorage.getItem(CLE_LICENCE_CLIENT) === 'oui') return;
   let maintenant = Date.now();
   let debut = parseInt(localStorage.getItem('epicerie_date_debut') || '0', 10);
   let derniere = parseInt(localStorage.getItem('epicerie_derniere_ouverture') || '0', 10);
@@ -562,7 +749,7 @@ if(produits.length==0){produits=[
 {code:'SANS-001',nom:'خبز',prix:1.5,prixAchat:1,stock:30,sansCode:true,photo:''},
 {code:'SANS-002',nom:'بيض بلدي',prix:1.8,prixAchat:1.2,stock:50,sansCode:true,photo:''}
 ]; save();}
-afficherStock(); afficherPanier(); majCompteur(); majCompteurAchat();
+afficherStock(); afficherPanier(); afficherCredits(); majCompteur(); majCompteurAchat();
 </script>
 <script>
   if ("serviceWorker" in navigator) {
