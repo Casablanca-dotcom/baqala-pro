@@ -136,6 +136,12 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 </div>
 <div class="box"><h3>🔍 قلب على منتج</h3><input id="recherche" placeholder="الاسم ولا الباركود..." oninput="afficherStock()"></div>
 <div class="box"><h3>📦 المخزون</h3><div id="listeStock"></div></div>
+<div class="box">
+<h3>💾 حفظ واسترجاع البيانات</h3>
+<button class="btn btn-blue" onclick="exporterDonnees()">📤 حفظ نسخة (Backup)</button>
+<input type="file" id="importBackup" accept=".json" style="display:none" onchange="importerDonnees(this)">
+<button class="btn btn-grey" onclick="document.getElementById('importBackup').click()">📥 استرجاع نسخة</button>
+</div>
 <div class="box"><button class="btn btn-red" onclick="resetTout()">⚠️ مسح كلشي</button></div>
 </div>
 <br>
@@ -403,6 +409,39 @@ function enregistrerProduit(){
   if(ligne) ligne.qte+=qte; else achatSession.push({code,nom,prixAchat,prix,qte});
   save(); majCompteurAchat(); bipFort('achat'); alert('✅ تزاد : '+nom+' +'+qte+' = '+trouver(code).stock);
   document.getElementById('formProduit').style.display='none';
+}
+function exporterDonnees(){
+  let data = {
+    produits: produits,
+    ventes: ventes,
+    date: new Date().toISOString()
+  };
+  let blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'baqala-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  montrerToast('✅ تيليشارجيتي النسخة الاحتياطية');
+}
+function importerDonnees(inp){
+  let file = inp.files[0];
+  if(!file) return;
+  let reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      let data = JSON.parse(e.target.result);
+      if(!Array.isArray(data.produits)) { alert('❌ الملف ما صالحش'); return; }
+      if(!confirm('غادي تعوض المخزون الحالي بهاد النسخة. متأكد ؟')) return;
+      produits = data.produits;
+      ventes = Array.isArray(data.ventes) ? data.ventes : [];
+      save();
+      alert('✅ تم استرجاع ' + produits.length + ' منتج بنجاح !');
+    }catch(err){
+      alert('❌ خطأ ف قراءة الملف');
+    }
+    inp.value = '';
+  };
+  reader.readAsText(file);
 }
 function resetTout(){if(confirm('تمسح كلشي ؟')){produits=[]; ventes=[]; panier=[]; scansClient=0; compteurScans=0; achatSession=[]; compteurAchatSession=0; save(); afficherPanier(); majCompteur(); majCompteurAchat();}}
 if(produits.length==0){produits=[
