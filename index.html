@@ -218,7 +218,6 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div class="box"><button class="btn btn-red" onclick="resetTout()">⚠️ مسح كلشي</button></div>
 </div>
 <br>
-
 <script>
 function lire(k){ try{ return JSON.parse(localStorage.getItem(k)||'[]'); }catch(e){ return []; } }
 function ecrire(k,v){ try{ localStorage.setItem(k,v); }catch(e){ alert('⚠️ الذاكرة عامرة، دير حفظ نسخة (Backup) ونقص التصاور الكبار'); } }
@@ -235,13 +234,15 @@ let streamActif=null; let scanEnCours=false; let rafId=null; let detector=null;
 let modeRapideAchat = true; let achatSession = []; let compteurAchatSession = 0; let dernierScanAchat = {};
 let photoCouranteForm = '';
 let sortieEnCours = null;
+let retourApresEnregistrement = 'achat';
 
 produits.forEach(p=>{
   if(p.prixAchat==null || p.prixAchat==0){ p.prixAchat = r2(p.prix*0.7); }
   if(p.sansCode==null) p.sansCode = String(p.code).startsWith('SANS-');
   if(p.photo==null) p.photo = '';
 });
-  function toggleModeRapide(){
+
+function toggleModeRapide(){
   modeRapideAchat = document.getElementById('modeRapideAchat').checked;
   document.getElementById('boxModeRapide').className = modeRapideAchat ? 'switch-box actif' : 'switch-box';
   montrerToast(modeRapideAchat ? '⚡ سريع ON : سكان = +1' : '📝 عادي : سكان = ورقة');
@@ -399,7 +400,7 @@ function afficherStock(){
         ${p.prix} درهم
         <small>الكمية: <b>${p.stock}</b></small>
         <small><button onclick="plusMoins('${c}',1)">+</button> <button onclick="plusMoins('${c}',-1)">-</button></small>
-        <small><button style="font-size:11px;padding:4px 8px;margin-top:4px" onclick="preparerAchat('${c}')">✏️ تعديل</button></small>
+        <small><button style="font-size:11px;padding:4px 8px;margin-top:4px" onclick="preparerAchat('${c}','stock')">✏️ تعديل</button></small>
       </div>
     </div>`;
   });
@@ -440,7 +441,7 @@ function stopScan(){
   let v1=document.getElementById('video-vente'); if(v1) v1.srcObject=null; let v2=document.getElementById('video-achat'); if(v2) v2.srcObject=null;
   let s1=document.getElementById('statusCamera'); if(s1) s1.textContent=''; let s2=document.getElementById('statusCameraAchat'); if(s2) s2.textContent='';
 }
-function onScan(c){
+  function onScan(c){
   if(!verifierAntiDouble(c)) return;
   if(modeScan=='vente'){ ajouterAuPanier(c,true); return; }
   traiterScanAchat(c);
@@ -470,8 +471,8 @@ function afficherPanier(){
   let html=''; let total=0;
   panier.forEach((l,i)=>{ let sous=r2(l.prix*l.qte); total+=sous; html+=`<div class="cart-item"><span>${esc(l.nom)} x ${l.qte}</span><span>${sous} درهم <button onclick="retirerDuPanier(${i})">❌</button></span></div>`; });
   document.getElementById('panier').innerHTML=html||'السلة خاوية'; document.getElementById('totalVente').textContent=r2(total)+' درهم';
-  }
-  function retirerDuPanier(i){ let l=panier[i]; if(l) scansClient=Math.max(0,scansClient-l.qte); panier.splice(i,1); afficherPanier(); afficherStock(); majCompteur();}
+}
+function retirerDuPanier(i){ let l=panier[i]; if(l) scansClient=Math.max(0,scansClient-l.qte); panier.splice(i,1); afficherPanier(); afficherStock(); majCompteur();}
 function viderPanier(){
   panier=[]; scansClient=0; sortieEnCours=null;
   document.getElementById('choixPaiementBox').style.display='none';
@@ -607,7 +608,8 @@ function afficherCredits(){
   });
   el.innerHTML = html;
 }
-function preparerAchat(code){
+function preparerAchat(code, retourTab){
+  retourApresEnregistrement = retourTab || 'achat';
   bipFort('achat'); showTab('achat'); document.getElementById('formProduit').style.display='block';
   document.getElementById('fCode').value=code; let p=trouver(code);
   document.getElementById('fNom').value=p?p.nom:'';
@@ -648,9 +650,12 @@ function enregistrerProduit(){
     let ligne = achatSession.find(l=>l.code==code);
     if(ligne) ligne.qte+=qte; else achatSession.push({code,nom,prixAchat,prix,qte});
   }
+  let destination = retourApresEnregistrement;
+  retourApresEnregistrement = 'achat';
+  document.getElementById('formProduit').style.display='none';
   save(); majCompteurAchat(); bipFort('achat');
   alert('✅ تسجل : '+nom+' (المخزون الحالي : '+trouver(code).stock+' وحدة)');
-  document.getElementById('formProduit').style.display='none';
+  if(destination === 'stock'){ showTab('stock'); }
 }
 function exporterDonnees(){
   let data = {
