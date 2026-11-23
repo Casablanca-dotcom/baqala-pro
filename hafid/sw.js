@@ -1,4 +1,4 @@
-const CACHE_NAME = 'baqala-hafid-v1';
+const CACHE_NAME = 'baqala-hafid-v2';
 
 self.addEventListener('install', event => {
   self.skipWaiting();
