@@ -11,6 +11,12 @@ body{background:#F2F2F2;padding-bottom:95px;direction:rtl}
 header{background:#0D7A3E;color:#fff;padding:16px;text-align:center}
 header h1{font-size:24px} header p{font-size:12px;opacity:.9}
 header .client-tag{font-size:12px;margin-top:5px;opacity:.95;font-weight:700;background:rgba(0,0,0,.18);display:inline-block;padding:4px 10px;border-radius:10px}
+.header-scan-area{display:none;margin-top:10px;text-align:right}
+.header-scan-area video{width:100%;height:230px;object-fit:cover;display:block;background:#000;border-radius:12px}
+.header-cam-wrap{position:relative;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,.45)}
+.header-cam-wrap .cadre{position:absolute;left:12%;right:12%;top:28%;height:92px;border:3px solid #00FF00;border-radius:12px;pointer-events:none}
+.header-cam-wrap .txt{position:absolute;bottom:6px;left:0;right:0;text-align:center;color:#fff;font-size:12px;background:rgba(0,0,0,.65);padding:5px}
+.header-status{font-size:12px;text-align:center;color:#E6F7ED;margin:8px 0;font-weight:700}
 .home{display:block;padding:16px}
 .home button.main-nav-btn{width:100%;padding:24px 12px;margin-bottom:14px;border:0;border-radius:18px;font-weight:900;font-size:21px;color:#fff;cursor:pointer}
 .home button.main-nav-btn small{display:block;font-size:13px;font-weight:400;opacity:.9;margin-top:4px}
@@ -20,7 +26,6 @@ header .client-tag{font-size:12px;margin-top:5px;opacity:.95;font-weight:700;bac
 .topbar button.home-btn{width:100%;padding:13px;border:1px solid #ccc;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;background:#fff;color:#111}
 .box{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
 .box h3{font-size:16px;margin-bottom:10px}
-.scan-top-box{border:2px solid #0D7A3E}
 .box-total{background:#0D7A3E;color:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
 .box-total .ligne{display:flex;justify-content:space-between;padding:7px 0;font-size:15px}
 .box-total .ligne:last-child{font-weight:900;font-size:17px;border-top:1px solid rgba(255,255,255,.4);margin-top:6px;padding-top:10px}
@@ -52,10 +57,6 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 .prix button{padding:6px 12px;font-size:16px;font-weight:900;border:1px solid #ddd;background:#fff;border-radius:8px;cursor:pointer}
 .cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed #ddd;font-size:14px}
 .total{font-size:22px;font-weight:900;text-align:left;margin:10px 0}
-.cam-box{background:#000;border-radius:14px;overflow:hidden;display:none;margin-bottom:8px;position:relative}
-.cam-box video{width:100%;height:280px;object-fit:cover;display:block;background:#000}
-.cam-box .cadre{position:absolute;left:12%;right:12%;top:32%;height:100px;border:3px solid #00FF00;border-radius:12px;pointer-events:none}
-.cam-box .txt{position:absolute;bottom:8px;left:0;right:0;text-align:center;color:#fff;font-size:12px;background:rgba(0,0,0,.6);padding:6px}
 .switch-box{background:#FFF3CD;border:2px solid #FF7A00;border-radius:12px;padding:12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;cursor:pointer}
 .switch-box.actif{background:#E6F7ED;border-color:#0D7A3E}
 .switch-box input{width:24px;height:24px;accent-color:#0D7A3E;margin:0}
@@ -101,10 +102,21 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
   </div>
 </div>
 
-<header>
-  <h1>🛒 بقالة برو</h1>
-  <p>البيع • المخزون • الباركود</p>
-  <div id="nomClientHeader" class="client-tag"></div>
+<header id="appHeader">
+  <div id="headerTitleBlock">
+    <h1>🛒 بقالة برو</h1>
+    <p>البيع • المخزون • الباركود</p>
+    <div id="nomClientHeader" class="client-tag"></div>
+  </div>
+  <div id="headerScanArea" class="header-scan-area">
+    <div class="header-cam-wrap">
+      <video id="headerVideo" playsinline muted></video>
+      <div class="cadre"></div>
+      <div id="headerCamHint" class="txt">حط الباركود وسط الكادر الخضر</div>
+    </div>
+    <div id="headerCamStatus" class="header-status"></div>
+    <button type="button" class="btn btn-grey" style="margin-bottom:0" onclick="bipTap(); stopScan()">⏹️ حبس الكاميرا</button>
+  </div>
 </header>
 
 <div id="home" class="home">
@@ -117,12 +129,27 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div id="vente" class="section">
 <div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
 
-<div class="box scan-top-box">
-<h3>📷 منطقة السكان والبيع</h3>
+<div class="sales-stats-box">
+  <h3>📊 ملخص المبيعات</h3>
+  <div class="sales-stats-grid">
+    <div class="sales-stat-card">
+      <small>مبيعات اليوم</small>
+      <b id="venteJour">0 درهم</b>
+    </div>
+    <div class="sales-stat-card">
+      <small>مبيعات الشهر</small>
+      <b id="venteMois">0 درهم</b>
+    </div>
+    <div class="sales-stat-card">
+      <small>مبيعات السنة</small>
+      <b id="venteAnnee">0 درهم</b>
+    </div>
+  </div>
+</div>
+
+<div class="box">
+<h3>🛒 البيع</h3>
 <button class="btn btn-orange" onclick="bipTap(); startScan('vente')">📷 حل الكاميرا و سكاني</button>
-<button class="btn btn-grey" onclick="bipTap(); stopScan()">⏹️ حبس الكاميرا</button>
-<div id="cam-vente" class="cam-box"><video id="video-vente" playsinline muted></video><div class="cadre"></div><div class="txt">حط الباركود وسط الكادر الخضر</div></div>
-<div id="statusCamera" style="font-size:12px;text-align:center;color:#666;margin:6px 0"></div>
 <div style="display:flex;gap:6px">
   <input id="codeVenteManuel" placeholder="باركود أو اسم المنتوج..." style="flex:1;margin-bottom:0" oninput="filtrerSuggestionsVente()" onkeydown="if(event.key==='Enter'){event.preventDefault();ajouterVenteManuel();}">
   <button class="btn btn-black" style="width:90px;margin-bottom:0" onclick="ajouterVenteManuel()">زيد</button>
@@ -172,24 +199,6 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
   <button type="button" class="btn btn-grey" onclick="bipTap(); annulerCredit()">❌ إلغاء</button>
 </div>
 </div>
-
-<div class="sales-stats-box">
-  <h3>📊 ملخص المبيعات</h3>
-  <div class="sales-stats-grid">
-    <div class="sales-stat-card">
-      <small>مبيعات اليوم</small>
-      <b id="venteJour">0 درهم</b>
-    </div>
-    <div class="sales-stat-card">
-      <small>مبيعات الشهر</small>
-      <b id="venteMois">0 درهم</b>
-    </div>
-    <div class="sales-stat-card">
-      <small>مبيعات السنة</small>
-      <b id="venteAnnee">0 درهم</b>
-    </div>
-  </div>
-</div>
 </div>
 
 <div id="credits" class="section">
@@ -211,24 +220,17 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 
 <div id="achat" class="section">
 <div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
-<div class="box scan-top-box">
-<h3>📷 منطقة السكان والشراء</h3>
-<button class="btn btn-orange" onclick="bipTap(); startScan('achat')">📷 حل الكاميرا و سكاني</button>
-<button class="btn btn-grey" onclick="bipTap(); stopScan()">⏹️ حبس الكاميرا</button>
-<div id="cam-achat" class="cam-box"><video id="video-achat" playsinline muted></video><div class="cadre"></div><div class="txt">حط الباركود وسط الكادر - كل سكان = +1</div></div>
-<div id="statusCameraAchat" style="font-size:12px;text-align:center;color:#666;margin:6px 0"></div>
-<div style="display:flex;gap:6px;margin-top:8px"><input id="codeAchatManuel" placeholder="6111203004024" style="flex:1"><button class="btn btn-black" style="width:90px" onclick="preparerAchatManuel()">واخا</button></div>
-</div>
-
 <div class="box">
-<h3>⚡ إعدادات الشراء والعدّاد</h3>
+<h3>📥 الشراء</h3>
 <label class="switch-box actif" id="boxModeRapide">
 <input type="checkbox" id="modeRapideAchat" checked onchange="bipTap(); toggleModeRapide()">
 <span><b>⚡ سكان سريع - ON</b><br><small style="font-weight:400">سكاني = +1 ف المخزون نيشان</small></span>
 </label>
 <div id="compteurAchat" class="compteur-achat">📥 هاد الجلسة : 0</div>
 <div style="display:flex;gap:6px"><button class="btn btn-grey" style="flex:1" onclick="bipTap(); resetCompteurAchat()">🔄 صفر</button><button class="btn btn-grey" style="flex:1" onclick="bipTap(); validerAchatRapide()">✅ ساليت</button></div>
+<button class="btn btn-orange" onclick="bipTap(); startScan('achat')">📷 حل الكاميرا و سكاني</button>
 <button class="btn btn-blue" onclick="bipTap(); creerSansCodeBarre()">➕ منتج بلا باركود (مع تصويرة)</button>
+<div style="display:flex;gap:6px;margin-top:8px"><input id="codeAchatManuel" placeholder="6111203004024" style="flex:1"><button class="btn btn-black" style="width:90px" onclick="preparerAchatManuel()">واخا</button></div>
 </div>
 
 <div class="box" id="formProduit" style="display:none">
@@ -557,28 +559,73 @@ function afficherStock(){
 }
 function plusMoins(c,d){let p=trouver(c); if(!p) return; p.stock=Math.max(0,p.stock+d); bipTap(); save();}
 function majStats(){ let tot = calculerTotauxStock(); document.getElementById('totalAchat').textContent = tot.totalAchat.toFixed(1)+' درهم'; document.getElementById('totalVenteStock').textContent = tot.totalVente.toFixed(1)+' درهم'; document.getElementById('totalUnites').textContent = tot.totalUnites+' وحدة'; document.getElementById('totalBenefice').textContent = tot.benefice.toFixed(1)+' درهم'; }
-function getStatusEl(){ return modeScan=='achat' ? document.getElementById('statusCameraAchat') : document.getElementById('statusCamera'); }
+
+function afficherTitreHeader(){
+  let titleBlock = document.getElementById('headerTitleBlock');
+  let scanArea = document.getElementById('headerScanArea');
+  if(scanArea) scanArea.style.display = 'none';
+  if(titleBlock) titleBlock.style.display = 'block';
+}
+function afficherScanHeader(mode){
+  let titleBlock = document.getElementById('headerTitleBlock');
+  let scanArea = document.getElementById('headerScanArea');
+  let hint = document.getElementById('headerCamHint');
+  if(titleBlock) titleBlock.style.display = 'none';
+  if(scanArea) scanArea.style.display = 'block';
+  if(hint){
+    hint.textContent = mode=='achat' && modeRapideAchat
+      ? 'حط الباركود وسط الكادر - كل سكان = +1'
+      : 'حط الباركود وسط الكادر الخضر';
+  }
+}
 async function startScan(mode){
-  modeScan=mode; let status=getStatusEl(); stopScan();
-  if(!('BarcodeDetector' in window)){ bipErreur(); if(status) status.textContent='⚠️ الكاميرا ما كدعمش قراءة الباركود هنا'; return; }
-  if(!detector){ try{ detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code']}); }catch(e){ detector = new BarcodeDetector(); } }
-  let video = document.getElementById(mode=='vente' ? 'video-vente' : 'video-achat'); let box = document.getElementById(mode=='vente' ? 'cam-vente' : 'cam-achat');
+  modeScan=mode;
+  let status=document.getElementById('headerCamStatus');
+  stopScan();
+  afficherScanHeader(mode);
+  if(!('BarcodeDetector' in window)){
+    bipErreur();
+    if(status) status.textContent='⚠️ الكاميرا ما كدعمش قراءة الباركود هنا';
+    return;
+  }
+  if(!detector){
+    try{ detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code']}); }
+    catch(e){ detector = new BarcodeDetector(); }
+  }
+  let video = document.getElementById('headerVideo');
   if(status) status.textContent='⏳ كنحل الكاميرا...';
   try{
     streamActif = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}, width:{ideal:1280}, height:{ideal:720}}, audio:false});
-    video.srcObject = streamActif; await video.play(); box.style.display='block'; scanEnCours=true;
+    video.srcObject = streamActif;
+    await video.play();
+    scanEnCours=true;
     if(status) status.textContent = mode=='achat' && modeRapideAchat ? '⚡ سريع ON - سكان = +1' : '✅ الكاميرا خدامة';
     boucleScan(video);
-  }catch(e){ stopScan(); bipErreur(); if(status) status.textContent='❌ ما عطيتيش الإذن للكاميرا'; alert('الكاميرا ما حلتش.'); }
+  }catch(e){
+    stopScan();
+    bipErreur();
+    alert('الكاميرا ما حلتش.');
+  }
 }
-async function boucleScan(video){ if(!scanEnCours) return; try{ let codes = await detector.detect(video); if(codes && codes.length>0){ onScan(codes[0].rawValue); await new Promise(r=>setTimeout(r, 900)); } }catch(e){} if(scanEnCours) rafId = requestAnimationFrame(()=>boucleScan(video)); }
+async function boucleScan(video){
+  if(!scanEnCours) return;
+  try{
+    let codes = await detector.detect(video);
+    if(codes && codes.length>0){ onScan(codes[0].rawValue); await new Promise(r=>setTimeout(r, 900)); }
+  }catch(e){}
+  if(scanEnCours) rafId = requestAnimationFrame(()=>boucleScan(video));
+}
 function stopScan(){
-  scanEnCours=false; if(rafId) cancelAnimationFrame(rafId);
+  scanEnCours=false;
+  if(rafId) cancelAnimationFrame(rafId);
   if(streamActif){ streamActif.getTracks().forEach(t=>t.stop()); streamActif=null; }
-  document.getElementById('cam-vente').style.display='none'; document.getElementById('cam-achat').style.display='none';
-  let v1=document.getElementById('video-vente'); if(v1) v1.srcObject=null; let v2=document.getElementById('video-achat'); if(v2) v2.srcObject=null;
-  let s1=document.getElementById('statusCamera'); if(s1) s1.textContent=''; let s2=document.getElementById('statusCameraAchat'); if(s2) s2.textContent='';
+  let v=document.getElementById('headerVideo');
+  if(v){ v.pause(); v.srcObject=null; }
+  let s=document.getElementById('headerCamStatus');
+  if(s) s.textContent='';
+  afficherTitreHeader();
 }
+
 function onScan(c){ if(!verifierAntiDouble(c)) return; if(modeScan=='vente'){ ajouterAuPanier(c,true); return; } traiterScanAchat(c); }
 function traiterScanAchat(code){
   let p = trouver(code); if(!p){ bipFort('achat'); montrerToast('🆕 منتج جديد'); preparerAchat(code); return; }
