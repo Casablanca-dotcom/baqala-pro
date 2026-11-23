@@ -221,6 +221,8 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
 <div class="box">
 <h3>📥 الشراء</h3>
+<label>📦 الكمية المشتراة</label>
+<input id="qteAchatCourante" type="number" min="1" step="1" value="1" placeholder="الكمية المشتراة">
 <button class="btn btn-orange" onclick="bipTap(); startScan('achat')">📷 حل الكاميرا و سكاني</button>
 <button class="btn btn-purple" onclick="bipTap(); lancerReconnaissancePhoto('achat')">🖼️ تعرف على الصورة (شراء)</button>
 <button class="btn btn-blue" onclick="bipTap(); creerSansCodeBarre()">➕ منتج بلا باركود (مع تصويرة)</button>
@@ -312,6 +314,13 @@ produits.forEach(p=>{
   if(p.sansCode==null) p.sansCode = String(p.code).startsWith('SANS-');
   if(p.photo==null) p.photo = '';
 });
+
+function obtenirQuantiteAchat(){
+  let el = document.getElementById('qteAchatCourante');
+  let q = el ? parseInt(el.value, 10) : 1;
+  if(isNaN(q) || q < 1) q = 1;
+  return q;
+}
 
 function afficherStatsVentes(){
   let elJour = document.getElementById('venteJour');
@@ -605,15 +614,16 @@ function traiterPhotoReconnaissance(inp){
                   ajouterAuPanier(meilleurProduit.code, false);
                 }
               } else {
-                if(confirm(`🖼️ أقرب منتج للصورة هو : ${meilleurProduit.nom}\nواش نزيدو فـ الشراء (+1 فـ المخزون) ؟`)){
-                  meilleurProduit.stock += 1;
+                let qteAchetee = obtenirQuantiteAchat();
+                if(confirm(`🖼️ أقرب منتج للصورة هو : ${meilleurProduit.nom}\nواش نزيدو +${qteAchetee} فـ الشراء والمخزون ؟`)){
+                  meilleurProduit.stock += qteAchetee;
                   let ligne = achatSession.find(l=>l.code===meilleurProduit.code);
-                  if(ligne) ligne.qte += 1;
-                  else achatSession.push({code:meilleurProduit.code, nom:meilleurProduit.nom, prixAchat:meilleurProduit.prixAchat, prix:meilleurProduit.prix, qte:1});
+                  if(ligne) ligne.qte += qteAchetee;
+                  else achatSession.push({code:meilleurProduit.code, nom:meilleurProduit.nom, prixAchat:meilleurProduit.prixAchat, prix:meilleurProduit.prix, qte:qteAchetee});
                   save();
                   majListeAchat();
                   bipFort('achat');
-                  montrerToast(`✅ +1 ${meilleurProduit.nom} | المخزون: ${meilleurProduit.stock}`);
+                  montrerToast(`✅ +${qteAchetee} ${meilleurProduit.nom} | المخزون: ${meilleurProduit.stock}`);
                 }
               }
             }
@@ -660,8 +670,9 @@ function afficherScanHeader(mode){
   if(titleBlock) titleBlock.style.display = 'none';
   if(scanArea) scanArea.style.display = 'block';
   if(hint){
+    let qte = obtenirQuantiteAchat();
     hint.textContent = mode=='achat'
-      ? 'حط الباركود وسط الكادر - سكان = +1 فـ المخزون'
+      ? `حط الباركود وسط الكادر - سكان = +${qte} فـ المخزون`
       : 'حط الباركود وسط الكادر الخضر';
   }
 }
@@ -686,7 +697,8 @@ async function startScan(mode){
     video.srcObject = streamActif;
     await video.play();
     scanEnCours=true;
-    if(status) status.textContent = mode=='achat' ? '✅ الكاميرا خدامة (شراء)' : '✅ الكاميرا خدامة (بيع)';
+    let qte = obtenirQuantiteAchat();
+    if(status) status.textContent = mode=='achat' ? `✅ الكاميرا خدامة (شراء +${qte})` : '✅ الكاميرا خدامة (بيع)';
     boucleScan(video);
   }catch(e){
     stopScan();
@@ -716,12 +728,13 @@ function stopScan(){
 function onScan(c){ if(!verifierAntiDouble(c)) return; if(modeScan=='vente'){ ajouterAuPanier(c,true); return; } traiterScanAchat(c); }
 function traiterScanAchat(code){
   let p = trouver(code);
+  let qteAchetee = obtenirQuantiteAchat();
   if(!p){ bipFort('achat'); montrerToast('🆕 منتج جديد'); preparerAchat(code); return; }
-  p.stock += 1;
+  p.stock += qteAchetee;
   let ligne = achatSession.find(l=>l.code==code);
-  if(ligne) ligne.qte++;
-  else achatSession.push({code:p.code, nom:p.nom, prixAchat:p.prixAchat, prix:p.prix, qte:1});
-  save(); majListeAchat(); bipFort('achat'); montrerToast(`✅ +1 ${p.nom} | المخزون: ${p.stock}`);
+  if(ligne) ligne.qte += qteAchetee;
+  else achatSession.push({code:p.code, nom:p.nom, prixAchat:p.prixAchat, prix:p.prix, qte:qteAchetee});
+  save(); majListeAchat(); bipFort('achat'); montrerToast(`✅ +${qteAchetee} ${p.nom} | المخزون: ${p.stock}`);
 }
 
 function ajouterAuPanier(code,deja){
@@ -859,7 +872,8 @@ function afficherCredits(){
 function preparerAchat(code, retourTab){
   retourApresEnregistrement = retourTab || 'achat'; bipFort('achat'); showTab('achat'); document.getElementById('formProduit').style.display='block';
   document.getElementById('fCode').value=code; let p=trouver(code);
-  document.getElementById('fNom').value=p?p.nom:''; document.getElementById('fPrixAchat').value=p?(p.prixAchat||''):''; document.getElementById('fPrix').value=p?p.prix:''; document.getElementById('fQte').value = p ? 0 : 1;
+  document.getElementById('fNom').value=p?p.nom:''; document.getElementById('fPrixAchat').value=p?(p.prixAchat||''):''; document.getElementById('fPrix').value=p?p.prix:'';
+  document.getElementById('fQte').value = p ? 0 : obtenirQuantiteAchat();
   photoCouranteForm = p && p.photo ? p.photo : '';
   if(photoCouranteForm){ document.getElementById('fPhotoPreview').src = photoCouranteForm; document.getElementById('fPhotoPreviewBox').style.display = 'block'; } else { supprimerPhotoForm(); }
   majPreviewBenefice(); document.getElementById('formProduit').scrollIntoView({behavior:'smooth'}); document.getElementById('fNom').focus();
