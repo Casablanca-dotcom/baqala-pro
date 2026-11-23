@@ -1,0 +1,9 @@
+{
+  "name": "بقالة حفيظ",
+  "short_name": "بقالة حفيظ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0D7A3E",
+  "theme_color": "#0D7A3E"
+}
