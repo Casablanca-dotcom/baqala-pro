@@ -1,1 +1,24 @@
-
+{
+  "name": "بقالة مصطفى سعادة",
+  "short_name": "بقالة مصطفى سعادة",
+  "description": "تطبيق بقالة مصطفى سعادة للبيع والمخزون والباركود",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0D7A3E",
+  "theme_color": "#0D7A3E",
+  "icons": [
+    {
+      "src": "./ICON192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./ICON512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
