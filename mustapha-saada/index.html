@@ -118,12 +118,12 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
       <label for="recoHeaderQteInput">📦 الكمية المشتراة للمنتج (افتراضي: 1)</label>
       <input id="recoHeaderQteInput" type="number" min="1" step="1" placeholder="مثال: 5 (أو خليها خاوية لـ 1)">
     </div>
+    <button type="button" id="btnReconSmartAchatHeader" class="btn btn-purple" style="display:none;margin-bottom:6px" onclick="bipTap(); capturerEtReconnaitreDepuisHeader()">🖼️ تعرف على الصورة (شراء)</button>
     <button type="button" id="btnCapturerPhotoProduit" class="btn btn-green" style="display:none;margin-bottom:6px" onclick="bipTap(); capturerPhotoProduitDepuisHeader()">📸 التقط التصويرة</button>
     <button type="button" id="btnReconPhotoHeader" class="btn btn-purple" style="display:none;margin-bottom:6px" onclick="bipTap(); capturerEtReconnaitreDepuisHeader()">🔍 تعرف على الصورة دابا</button>
     <button type="button" class="btn btn-grey" style="margin-bottom:0" onclick="bipTap(); stopScan()">⏹️ حبس الكاميرا</button>
   </div>
 </header>
-
 <div id="home" class="home">
 <button class="main-nav-btn b-vente" onclick="bipTap(); showTab('vente')">🛒 بيع<small>بيع للكليان - سكاني و خرج السلعة</small></button>
 <button class="main-nav-btn b-achat" onclick="bipTap(); showTab('achat')">📥 شراء<small>زيد السلع للمخزون</small></button>
@@ -223,13 +223,11 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div id="listeCredits"></div>
 </div>
 </div>
-
 <div id="achat" class="section">
 <div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
 <div id="achatActionsBox" class="box">
 <h3>📥 الشراء</h3>
 <button class="btn btn-orange" onclick="bipTap(); startScan('achat')">📷 حل الكاميرا و سكاني</button>
-<button class="btn btn-purple" onclick="bipTap(); lancerReconnaissancePhoto('achat')">🖼️ تعرف على الصورة (شراء)</button>
 <button class="btn btn-blue" onclick="bipTap(); creerSansCodeBarre()">➕ منتج بلا باركود (مع تصويرة)</button>
 
 <label>🔍 بحث بالباركود أو اسم المنتوج</label>
@@ -326,8 +324,7 @@ produits.forEach(p=>{
   if(p.sansCode==null) p.sansCode = String(p.code).startsWith('SANS-');
   if(p.photo==null) p.photo = '';
 });
-
-function appliquerFocusInterface(){
+  function appliquerFocusInterface(){
   let footerWrap = document.getElementById('footerBackupWrap');
   let venteStats = document.getElementById('venteStatsBox');
   let venteActions = document.getElementById('venteActionsBox');
@@ -360,36 +357,37 @@ function appliquerFocusInterface(){
     venteSection.style.display = 'block';
   }
 
-  if(modeActif === 'camera_photo_produit'){
+  if(modeActif === 'camera_photo_produit' || modeActif === 'form_produit'){
     if(achatActions) achatActions.style.display = 'none';
     if(achatSessionBox) achatSessionBox.style.display = 'none';
     if(formProduit) formProduit.style.display = 'block';
-  } else if(modeActif === 'form_produit'){
+    if(footerWrap) footerWrap.style.display = 'none';
+  } else if(modeActif === 'camera_achat'){
     if(achatActions) achatActions.style.display = 'none';
+    if(formProduit) formProduit.style.display = 'none';
     if(achatSessionBox) achatSessionBox.style.display = 'none';
-    if(formProduit) formProduit.style.display = 'block';
+    if(achatSection) achatSection.style.display = 'none';
+    if(footerWrap) footerWrap.style.display = 'none';
   } else if(modeActif === 'camera_reco_photo'){
     if(modeReconnaissancePhoto === 'achat'){
       if(achatActions) achatActions.style.display = 'none';
       if(formProduit) formProduit.style.display = 'none';
       if(achatSessionBox) achatSessionBox.style.display = 'none';
       if(achatSection) achatSection.style.display = 'none';
+      if(footerWrap) footerWrap.style.display = 'none';
     } else {
       if(venteStats) venteStats.style.display = 'none';
       if(venteActions) venteActions.style.display = 'none';
       if(ventePanier) ventePanier.style.display = 'none';
       if(venteSection) venteSection.style.display = 'none';
+      if(footerWrap) footerWrap.style.display = 'none';
     }
   } else if(modeActif === 'camera_vente'){
     if(venteStats) venteStats.style.display = 'none';
     if(venteActions) venteActions.style.display = 'none';
     if(ventePanier) ventePanier.style.display = 'none';
     if(venteSection) venteSection.style.display = 'none';
-  } else if(modeActif === 'camera_achat'){
-    if(achatActions) achatActions.style.display = 'none';
-    if(formProduit) formProduit.style.display = 'none';
-    if(achatSessionBox) achatSessionBox.style.display = 'none';
-    if(achatSection) achatSection.style.display = 'none';
+    if(footerWrap) footerWrap.style.display = 'none';
   } else if(modeActif === 'paiement_sortie'){
     if(venteStats) venteStats.style.display = 'none';
     if(venteActions) venteActions.style.display = 'none';
@@ -397,6 +395,7 @@ function appliquerFocusInterface(){
     if(choixPaiement && choixPaiement.style.display !== 'block' && (!formCredit || formCredit.style.display !== 'block')){
       choixPaiement.style.display = 'block';
     }
+    if(footerWrap) footerWrap.style.display = 'none';
   } else {
     if(formProduit && formProduit.style.display === 'block'){
       if(achatActions) achatActions.style.display = 'none';
@@ -608,9 +607,8 @@ function trouverParCodeOuNom(val){
   let exactNom = produits.find(p=>String(p.nom).toLowerCase() === clean.toLowerCase());
   if(exactNom) return exactNom;
   return produits.find(p=>String(p.nom).toLowerCase().includes(clean.toLowerCase()) || String(p.code).toLowerCase().includes(clean.toLowerCase())) || null;
-}
-
-function filtrerSuggestionsVente(){
+  }
+  function filtrerSuggestionsVente(){
   let inp = document.getElementById('codeVenteManuel'); let box = document.getElementById('suggestionsVente');
   if(!inp || !box) return;
   let q = inp.value.trim().toLowerCase();
@@ -774,6 +772,11 @@ function analyserPhotoCaptee(dataUrl, qteAchetee){
     extraireSignatureVisuelle(photoCaptee, function(sigCaptee){
       if(!sigCaptee){ bipErreur(); montrerToast('❌ ما قدرناش نحلل الصورة'); return; }
       let candidats = produits.filter(p => p.photo && String(p.photo).startsWith('data:image'));
+      if(candidats.length === 0){
+        bipErreur();
+        montrerToast('⚠️ ما كاين حتى منتج عندو تصويرة مسجلة');
+        return;
+      }
       let pending = candidats.length;
       let meilleurProduit = null;
       let meilleurScore = Infinity;
@@ -844,9 +847,11 @@ function afficherTitreHeader(){
   let scanArea = document.getElementById('headerScanArea');
   let btnCap = document.getElementById('btnCapturerPhotoProduit');
   let btnReco = document.getElementById('btnReconPhotoHeader');
+  let btnSmartAchat = document.getElementById('btnReconSmartAchatHeader');
   let recoQteBox = document.getElementById('recoHeaderQteBox');
   if(btnCap) btnCap.style.display = 'none';
   if(btnReco) btnReco.style.display = 'none';
+  if(btnSmartAchat) btnSmartAchat.style.display = 'none';
   if(recoQteBox) recoQteBox.style.display = 'none';
   if(scanArea) scanArea.style.display = 'none';
   if(titleBlock) titleBlock.style.display = 'block';
@@ -857,12 +862,16 @@ function afficherScanHeader(mode){
   let hint = document.getElementById('headerCamHint');
   let btnCap = document.getElementById('btnCapturerPhotoProduit');
   let btnReco = document.getElementById('btnReconPhotoHeader');
+  let btnSmartAchat = document.getElementById('btnReconSmartAchatHeader');
   let recoQteBox = document.getElementById('recoHeaderQteBox');
   if(titleBlock) titleBlock.style.display = 'none';
   if(scanArea) scanArea.style.display = 'block';
   if(btnCap) btnCap.style.display = (mode === 'photo_produit') ? 'block' : 'none';
   if(btnReco) btnReco.style.display = (mode === 'reco_photo') ? 'block' : 'none';
-  if(recoQteBox) recoQteBox.style.display = (mode === 'reco_photo' && modeReconnaissancePhoto === 'achat') ? 'block' : 'none';
+  if(btnSmartAchat) btnSmartAchat.style.display = (mode === 'achat') ? 'block' : 'none';
+  if(recoQteBox){
+    recoQteBox.style.display = ((mode === 'reco_photo' && modeReconnaissancePhoto === 'achat') || mode === 'achat') ? 'block' : 'none';
+  }
   if(hint){
     if(mode === 'photo_produit'){
       hint.textContent = 'حط المنتج وسط الكادر وكليكي على "التقط التصويرة"';
@@ -871,7 +880,7 @@ function afficherScanHeader(mode){
         ? 'دخل الكمية وكليكي على "تعرف على الصورة دابا" (إضافة أوتوماتيكية)'
         : 'حط المنتج وسط الكادر وكليكي على "تعرف على الصورة دابا"';
     } else if(mode === 'achat'){
-      hint.textContent = 'حط الباركود وسط الكادر - سكان = اختيار المنتج';
+      hint.textContent = 'سكاني الباركود أو استعمل "تعرف على الصورة (شراء)" لبلا باركود';
     } else {
       hint.textContent = 'حط الباركود وسط الكادر الخضر';
     }
@@ -879,9 +888,15 @@ function afficherScanHeader(mode){
 }
 async function startScan(mode){
   modeScan=mode;
+  if(mode === 'achat'){
+    modeReconnaissancePhoto = 'achat';
+    let qteInp = document.getElementById('recoHeaderQteInput');
+    if(qteInp) qteInp.value = '';
+  }
   let status=document.getElementById('headerCamStatus');
   stopScan();
   modeScan=mode;
+  if(mode === 'achat') modeReconnaissancePhoto = 'achat';
   afficherScanHeader(mode);
 
   let modeSansBarcode = (mode === 'photo_produit' || mode === 'reco_photo');
@@ -905,7 +920,7 @@ async function startScan(mode){
     if(status){
       if(mode === 'photo_produit') status.textContent = '✅ الكاميرا خدامة (تصوير المنتج)';
       else if(mode === 'reco_photo') status.textContent = '✅ الكاميرا خدامة (التعرف على الصورة)';
-      else status.textContent = mode=='achat' ? '✅ الكاميرا خدامة (شراء)' : '✅ الكاميرا خدامة (بيع)';
+      else status.textContent = mode=='achat' ? '✅ الكاميرا خدامة (باركود + صورة بلا كود بار)' : '✅ الكاميرا خدامة (بيع)';
     }
     if(!modeSansBarcode) boucleScan(video);
   }catch(e){
@@ -1309,3 +1324,5 @@ peuplerListesClients(); afficherStatsVentes(); afficherStock(); afficherPanier()
 <script>if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("./sw.js").catch(()=>{});});}</script>
 </body>
 </html>
+
+                                                                                         
