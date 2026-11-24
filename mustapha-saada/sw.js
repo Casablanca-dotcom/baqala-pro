@@ -1,4 +1,4 @@
-const CACHE_NAME = 'baqala-mustapha-saada-v2';
+const CACHE_NAME = 'baqala-mustapha-saada-v1';
 const ASSETS = [
   './',
   './index.html',
