@@ -113,6 +113,7 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
       <div id="headerCamHint" class="txt">حط الباركود وسط الكادر الخضر</div>
     </div>
     <div id="headerCamStatus" class="header-status"></div>
+    <button type="button" id="btnCapturerPhotoProduit" class="btn btn-green" style="display:none;margin-bottom:6px" onclick="bipTap(); capturerPhotoProduitDepuisHeader()">📸 التقط التصويرة</button>
     <button type="button" class="btn btn-grey" style="margin-bottom:0" onclick="bipTap(); stopScan()">⏹️ حبس الكاميرا</button>
   </div>
 </header>
@@ -242,8 +243,7 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <label>الباركود / الكود</label><input id="fCode" readonly>
 <label>اسم المنتج *</label><input id="fNom" placeholder="مثال: فرماج الحمد أو خبز">
 <label>📷 تصويرة المنتج (باش تعقل عليه)</label>
-<input type="file" id="fPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="chargerPhotoProduit(this)">
-<button type="button" class="btn btn-blue" onclick="bipTap(); document.getElementById('fPhotoInput').click()">📸 صور المنتج أو اختار تصويرة</button>
+<button type="button" class="btn btn-blue" onclick="bipTap(); startScan('photo_produit')">📸 صور المنتج بالكاميرا</button>
 <div id="fPhotoPreviewBox" class="photo-preview-box" style="display:none">
   <img id="fPhotoPreview" src="" alt="صورة المنتج"><br>
   <button type="button" class="btn btn-grey" style="margin-top:6px;padding:8px;font-size:12px" onclick="bipTap(); supprimerPhotoForm()">🗑️ حيد التصويرة</button>
@@ -559,19 +559,28 @@ function compresserDataUrl(dataUrl, maxDim, quality, cb){
   img.src = dataUrl;
 }
 
-function chargerPhotoProduit(inp){
-  let file = inp.files[0]; if(!file) return;
-  let reader = new FileReader();
-  reader.onload = function(e){
-    compresserDataUrl(e.target.result, 220, 0.65, function(compressed){
-      photoCouranteForm = compressed;
-      document.getElementById('fPhotoPreview').src = photoCouranteForm;
-      document.getElementById('fPhotoPreviewBox').style.display = 'block';
-      bipFort('achat');
-    });
-  };
-  reader.readAsDataURL(file); inp.value = '';
+function capturerPhotoProduitDepuisHeader(){
+  let video = document.getElementById('headerVideo');
+  if(!video || !video.videoWidth || !video.videoHeight){
+    bipErreur();
+    alert('⚠️ الكاميرا ما زال ما واجدة للتصوير');
+    return;
+  }
+  let canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+  let rawDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+  compresserDataUrl(rawDataUrl, 220, 0.65, function(compressed){
+    photoCouranteForm = compressed;
+    document.getElementById('fPhotoPreview').src = photoCouranteForm;
+    document.getElementById('fPhotoPreviewBox').style.display = 'block';
+    stopScan();
+    bipFort('achat');
+    montrerToast('✅ تصورات الصورة مزيان');
+  });
 }
+
 function supprimerPhotoForm(){ photoCouranteForm = ''; document.getElementById('fPhotoPreview').src = ''; document.getElementById('fPhotoPreviewBox').style.display = 'none'; }
 
 function extraireSignatureVisuelle(imgSrc, cb){
@@ -703,6 +712,8 @@ function majStats(){ let tot = calculerTotauxStock(); document.getElementById('t
 function afficherTitreHeader(){
   let titleBlock = document.getElementById('headerTitleBlock');
   let scanArea = document.getElementById('headerScanArea');
+  let btnCap = document.getElementById('btnCapturerPhotoProduit');
+  if(btnCap) btnCap.style.display = 'none';
   if(scanArea) scanArea.style.display = 'none';
   if(titleBlock) titleBlock.style.display = 'block';
 }
@@ -710,25 +721,33 @@ function afficherScanHeader(mode){
   let titleBlock = document.getElementById('headerTitleBlock');
   let scanArea = document.getElementById('headerScanArea');
   let hint = document.getElementById('headerCamHint');
+  let btnCap = document.getElementById('btnCapturerPhotoProduit');
   if(titleBlock) titleBlock.style.display = 'none';
   if(scanArea) scanArea.style.display = 'block';
+  if(btnCap) btnCap.style.display = (mode === 'photo_produit') ? 'block' : 'none';
   if(hint){
-    hint.textContent = mode=='achat'
-      ? 'حط الباركود وسط الكادر - سكان = اختيار المنتج'
-      : 'حط الباركود وسط الكادر الخضر';
+    if(mode === 'photo_produit'){
+      hint.textContent = 'حط المنتج وسط الكادر وكليكي على "التقط التصويرة"';
+    } else if(mode === 'achat'){
+      hint.textContent = 'حط الباركود وسط الكادر - سكان = اختيار المنتج';
+    } else {
+      hint.textContent = 'حط الباركود وسط الكادر الخضر';
+    }
   }
 }
 async function startScan(mode){
   modeScan=mode;
   let status=document.getElementById('headerCamStatus');
   stopScan();
+  modeScan=mode;
   afficherScanHeader(mode);
-  if(!('BarcodeDetector' in window)){
+
+  if(mode !== 'photo_produit' && !('BarcodeDetector' in window)){
     bipErreur();
     if(status) status.textContent='⚠️ الكاميرا ما كدعمش قراءة الباركود هنا';
     return;
   }
-  if(!detector){
+  if(mode !== 'photo_produit' && !detector){
     try{ detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code']}); }
     catch(e){ detector = new BarcodeDetector(); }
   }
@@ -739,8 +758,11 @@ async function startScan(mode){
     video.srcObject = streamActif;
     await video.play();
     scanEnCours=true;
-    if(status) status.textContent = mode=='achat' ? '✅ الكاميرا خدامة (شراء)' : '✅ الكاميرا خدامة (بيع)';
-    boucleScan(video);
+    if(status){
+      if(mode === 'photo_produit') status.textContent = '✅ الكاميرا خدامة (تصوير المنتج)';
+      else status.textContent = mode=='achat' ? '✅ الكاميرا خدامة (شراء)' : '✅ الكاميرا خدامة (بيع)';
+    }
+    if(mode !== 'photo_produit') boucleScan(video);
   }catch(e){
     stopScan();
     bipErreur();
@@ -748,12 +770,12 @@ async function startScan(mode){
   }
 }
 async function boucleScan(video){
-  if(!scanEnCours) return;
+  if(!scanEnCours || modeScan === 'photo_produit') return;
   try{
     let codes = await detector.detect(video);
     if(codes && codes.length>0){ onScan(codes[0].rawValue); await new Promise(r=>setTimeout(r, 900)); }
   }catch(e){}
-  if(scanEnCours) rafId = requestAnimationFrame(()=>boucleScan(video));
+  if(scanEnCours && modeScan !== 'photo_produit') rafId = requestAnimationFrame(()=>boucleScan(video));
 }
 function stopScan(){
   scanEnCours=false;
