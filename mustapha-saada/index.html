@@ -11,7 +11,7 @@ body{background:#F2F2F2;padding-bottom:95px;direction:rtl}
 header{background:#0D7A3E;color:#fff;padding:16px;text-align:center}
 header h1{font-size:24px} header p{font-size:12px;opacity:.9}
 header .client-tag{font-size:12px;margin-top:5px;opacity:.95;font-weight:700;background:rgba(0,0,0,.18);display:inline-block;padding:4px 10px;border-radius:10px}
-.header-scan-area{display:none;margin-top:10px;text-align:right}
+.header-scan-area{display:none;margin-top:6px;text-align:right}
 .header-scan-area video{width:100%;height:230px;object-fit:cover;display:block;background:#000;border-radius:12px}
 .header-cam-wrap{position:relative;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,.45)}
 .header-cam-wrap .cadre{position:absolute;left:12%;right:12%;top:28%;height:92px;border:3px solid #00FF00;border-radius:12px;pointer-events:none}
@@ -87,8 +87,6 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div id="flashEpuise">⛔ سالا المخزون</div>
 <div id="toast"></div>
 
-<input type="file" id="photoRecoInput" accept="image/*" capture="environment" style="display:none" onchange="traiterPhotoReconnaissance(this)">
-
 <div id="ecranExpire">
   <div style="background:#1E1E1E;border:2px solid #E63946;border-radius:18px;padding:24px;max-width:380px;width:100%">
     <div style="font-size:42px;margin-bottom:10px">🔒</div>
@@ -114,6 +112,7 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
     </div>
     <div id="headerCamStatus" class="header-status"></div>
     <button type="button" id="btnCapturerPhotoProduit" class="btn btn-green" style="display:none;margin-bottom:6px" onclick="bipTap(); capturerPhotoProduitDepuisHeader()">📸 التقط التصويرة</button>
+    <button type="button" id="btnReconPhotoHeader" class="btn btn-purple" style="display:none;margin-bottom:6px" onclick="bipTap(); capturerEtReconnaitreDepuisHeader()">🔍 تعرف على الصورة دابا</button>
     <button type="button" class="btn btn-grey" style="margin-bottom:0" onclick="bipTap(); stopScan()">⏹️ حبس الكاميرا</button>
   </div>
 </header>
@@ -128,7 +127,7 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div id="vente" class="section">
 <div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
 
-<div class="sales-stats-box">
+<div id="venteStatsBox" class="sales-stats-box">
   <h3>📊 ملخص المبيعات</h3>
   <div class="sales-stats-grid">
     <div class="sales-stat-card">
@@ -146,7 +145,7 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
   </div>
 </div>
 
-<div class="box">
+<div id="venteActionsBox" class="box">
 <h3>🛒 البيع</h3>
 <button class="btn btn-orange" onclick="bipTap(); startScan('vente')">📷 حل الكاميرا و سكاني</button>
 <button class="btn btn-purple" onclick="bipTap(); lancerReconnaissancePhoto('vente')">🖼️ تعرف على الصورة (بيع)</button>
@@ -157,7 +156,7 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div id="suggestionsVente" class="search-results"></div>
 </div>
 
-<div class="box">
+<div id="ventePanierBox" class="box">
 <h3>🧾 سلة الكليان</h3>
 <div id="compteurScan" class="compteur">📷 السكانات : 0 | 🛒 السلة : 0</div>
 <button class="btn btn-grey" onclick="bipTap(); resetCompteur()">🔄 صفر العداد</button>
@@ -220,7 +219,7 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 
 <div id="achat" class="section">
 <div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
-<div class="box">
+<div id="achatActionsBox" class="box">
 <h3>📥 الشراء</h3>
 <button class="btn btn-orange" onclick="bipTap(); startScan('achat')">📷 حل الكاميرا و سكاني</button>
 <button class="btn btn-purple" onclick="bipTap(); lancerReconnaissancePhoto('achat')">🖼️ تعرف على الصورة (شراء)</button>
@@ -253,10 +252,10 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <label>الكمية *</label><input id="fQte" type="number">
 <div id="previewBenefice" style="background:#E6F7ED;padding:10px;border-radius:10px;font-weight:800;text-align:center;margin-bottom:8px"></div>
 <button class="btn btn-green" onclick="enregistrerProduit()">💾 سجل</button>
-<button class="btn btn-grey" onclick="bipTap(); document.getElementById('formProduit').style.display='none'">❌ حبس</button>
+<button class="btn btn-grey" onclick="bipTap(); fermerFormProduit()">❌ حبس</button>
 </div>
 
-<div class="box">
+<div id="achatSessionBox" class="box">
 <h3>📋 آخر المنتجات اللي زدتيهم</h3>
 <div id="listeAchatRapide"></div>
 </div>
@@ -281,7 +280,7 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div class="box"><button class="btn btn-red" onclick="bipTap(); resetTout()">⚠️ مسح كلشي</button></div>
 </div>
 
-<div class="footer-backup-wrap">
+<div id="footerBackupWrap" class="footer-backup-wrap">
   <button type="button" class="footer-backup-btn" onclick="exporterDonnees()">📄 نسخة JSON</button>
 </div>
 
@@ -313,12 +312,81 @@ let dernierProduitAchatCode = '';
 let photoCouranteForm = '';
 let sortieEnCours = null;
 let retourApresEnregistrement = 'achat';
+let vueFocalisee = 'normal';
 
 produits.forEach(p=>{
   if(p.prixAchat==null || p.prixAchat==0){ p.prixAchat = r2(p.prix*0.7); }
   if(p.sansCode==null) p.sansCode = String(p.code).startsWith('SANS-');
   if(p.photo==null) p.photo = '';
 });
+
+function appliquerFocusInterface(){
+  let footerWrap = document.getElementById('footerBackupWrap');
+  let venteStats = document.getElementById('venteStatsBox');
+  let venteActions = document.getElementById('venteActionsBox');
+  let ventePanier = document.getElementById('ventePanierBox');
+  let choixPaiement = document.getElementById('choixPaiementBox');
+  let formCredit = document.getElementById('formulaireCreditBox');
+  let achatActions = document.getElementById('achatActionsBox');
+  let formProduit = document.getElementById('formProduit');
+  let achatSessionBox = document.getElementById('achatSessionBox');
+
+  let modeActif = vueFocalisee;
+  if(scanEnCours && (modeScan === 'photo_produit' || modeScan === 'reco_photo' || modeScan === 'vente' || modeScan === 'achat')){
+    modeActif = 'camera_' + modeScan;
+  }
+
+  let estEnAction = (modeActif !== 'normal');
+  if(footerWrap) footerWrap.style.display = estEnAction ? 'none' : 'flex';
+
+  // إعادة إظهار الصناديق الافتراضية ثم تصفيتها حسب الخطوة الحالية
+  if(venteStats) venteStats.style.display = 'block';
+  if(venteActions) venteActions.style.display = 'block';
+  if(ventePanier) ventePanier.style.display = 'block';
+  if(achatActions) achatActions.style.display = 'block';
+  if(achatSessionBox) achatSessionBox.style.display = 'block';
+
+  if(modeActif === 'camera_photo_produit'){
+    if(achatActions) achatActions.style.display = 'none';
+    if(achatSessionBox) achatSessionBox.style.display = 'none';
+    if(formProduit) formProduit.style.display = 'block';
+  } else if(modeActif === 'form_produit'){
+    if(achatActions) achatActions.style.display = 'none';
+    if(achatSessionBox) achatSessionBox.style.display = 'none';
+    if(formProduit) formProduit.style.display = 'block';
+  } else if(modeActif === 'camera_reco_photo' || modeActif === 'camera_vente'){
+    if(venteStats) venteStats.style.display = 'none';
+    if(venteActions) venteActions.style.display = 'none';
+    if(ventePanier) ventePanier.style.display = 'none';
+  } else if(modeActif === 'camera_achat'){
+    if(achatActions) achatActions.style.display = 'none';
+    if(formProduit) formProduit.style.display = 'none';
+    if(achatSessionBox) achatSessionBox.style.display = 'none';
+  } else if(modeActif === 'paiement_sortie'){
+    if(venteStats) venteStats.style.display = 'none';
+    if(venteActions) venteActions.style.display = 'none';
+    if(ventePanier) ventePanier.style.display = 'block';
+    if(choixPaiement && choixPaiement.style.display !== 'block' && (!formCredit || formCredit.style.display !== 'block')){
+      choixPaiement.style.display = 'block';
+    }
+  } else {
+    if(formProduit && formProduit.style.display === 'block'){
+      if(achatActions) achatActions.style.display = 'none';
+      if(achatSessionBox) achatSessionBox.style.display = 'none';
+      if(footerWrap) footerWrap.style.display = 'none';
+    }
+  }
+}
+
+function definirVueFocalisee(mode){
+  vueFocalisee = mode || 'normal';
+  appliquerFocusInterface();
+}
+
+function fermerFormProduit(){
+  document.getElementById('formProduit').style.display = 'none';
+  definirVueFocalisee('normal');
+}
 
 function lireQuantiteSaisieAchat(){
   let el = document.getElementById('qteAchatCourante');
@@ -466,6 +534,15 @@ function save(){
 }
 function showTab(n){
   stopScan();
+  vueFocalisee = 'normal';
+  if(n !== 'vente'){
+    sortieEnCours = null;
+    document.getElementById('choixPaiementBox').style.display = 'none';
+    document.getElementById('formulaireCreditBox').style.display = 'none';
+  }
+  if(n !== 'achat'){
+    document.getElementById('formProduit').style.display = 'none';
+  }
   document.getElementById('home').style.display = n=='home' ? 'block' : 'none';
   document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));
   if(n!=='home'){
@@ -475,6 +552,7 @@ function showTab(n){
     if(n=='credits') afficherCredits();
     window.scrollTo(0,0);
   }
+  appliquerFocusInterface();
 }
 function trouver(c){return produits.find(p=>p.code==c);}
 function trouverParCodeOuNom(val){
@@ -576,6 +654,7 @@ function capturerPhotoProduitDepuisHeader(){
     document.getElementById('fPhotoPreview').src = photoCouranteForm;
     document.getElementById('fPhotoPreviewBox').style.display = 'block';
     stopScan();
+    definirVueFocalisee('form_produit');
     bipFort('achat');
     montrerToast('✅ تصورات الصورة مزيان');
   });
@@ -622,70 +701,80 @@ function lancerReconnaissancePhoto(mode){
     alert('⚠️ ما كاين حتى منتج عندو تصويرة مسجلة فـ المخزون باش نقارن معاه. زيد تصويرة للمنتج أولاً.');
     return;
   }
-  let inp = document.getElementById('photoRecoInput');
-  if(inp) inp.click();
+  startScan('reco_photo');
 }
 
-function traiterPhotoReconnaissance(inp){
-  let file = inp.files[0]; if(!file) return;
-  let reader = new FileReader();
-  reader.onload = function(e){
-    compresserDataUrl(e.target.result, 220, 0.7, function(photoCaptee){
-      extraireSignatureVisuelle(photoCaptee, function(sigCaptee){
-        if(!sigCaptee){ bipErreur(); alert('❌ ما قدرناش نحلل الصورة'); return; }
-        let candidats = produits.filter(p => p.photo && String(p.photo).startsWith('data:image'));
-        let pending = candidats.length;
-        let meilleurProduit = null;
-        let meilleurScore = Infinity;
+function capturerEtReconnaitreDepuisHeader(){
+  let video = document.getElementById('headerVideo');
+  if(!video || !video.videoWidth || !video.videoHeight){
+    bipErreur();
+    alert('⚠️ الكاميرا ما زال ما واجدة للتصوير');
+    return;
+  }
+  let canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+  let rawDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+  stopScan();
+  definirVueFocalisee('normal');
+  analyserPhotoCaptee(rawDataUrl);
+}
 
-        candidats.forEach(p=>{
-          extraireSignatureVisuelle(p.photo, function(sigProd){
-            let score = comparerSignatures(sigCaptee, sigProd);
-            if(score < meilleurScore){
-              meilleurScore = score;
-              meilleurProduit = p;
+function analyserPhotoCaptee(dataUrl){
+  compresserDataUrl(dataUrl, 220, 0.7, function(photoCaptee){
+    extraireSignatureVisuelle(photoCaptee, function(sigCaptee){
+      if(!sigCaptee){ bipErreur(); alert('❌ ما قدرناش نحلل الصورة'); return; }
+      let candidats = produits.filter(p => p.photo && String(p.photo).startsWith('data:image'));
+      let pending = candidats.length;
+      let meilleurProduit = null;
+      let meilleurScore = Infinity;
+
+      candidats.forEach(p=>{
+        extraireSignatureVisuelle(p.photo, function(sigProd){
+          let score = comparerSignatures(sigCaptee, sigProd);
+          if(score < meilleurScore){
+            meilleurScore = score;
+            meilleurProduit = p;
+          }
+          pending--;
+          if(pending === 0){
+            if(!meilleurProduit){
+              bipErreur();
+              alert('❌ ما لقا حتى تطابق مع صور المخزون');
+              return;
             }
-            pending--;
-            if(pending === 0){
-              if(!meilleurProduit){
-                bipErreur();
-                alert('❌ ما لقا حتى تطابق مع صور المخزون');
+            if(modeReconnaissancePhoto === 'vente'){
+              if(confirm(`🖼️ أقرب منتج للصورة هو : ${meilleurProduit.nom} (${meilleurProduit.prix} درهم)\nواش نزيدو للسلة ؟`)){
+                ajouterAuPanier(meilleurProduit.code, false);
+              }
+            } else {
+              dernierProduitAchatCode = meilleurProduit.code;
+              let qteAchetee = lireQuantiteSaisieAchat();
+              if(!qteAchetee){
+                bipTap();
+                alert(`🖼️ تم التعرف على : ${meilleurProduit.nom}\nدخل الكمية المشتراة فـ الخانة وكليكي على "📥 دخل الكمية للسطوك".`);
+                let qteEl = document.getElementById('qteAchatCourante');
+                if(qteEl) qteEl.focus();
                 return;
               }
-              if(modeReconnaissancePhoto === 'vente'){
-                if(confirm(`🖼️ أقرب منتج للصورة هو : ${meilleurProduit.nom} (${meilleurProduit.prix} درهم)\nواش نزيدو للسلة ؟`)){
-                  ajouterAuPanier(meilleurProduit.code, false);
-                }
-              } else {
-                dernierProduitAchatCode = meilleurProduit.code;
-                let qteAchetee = lireQuantiteSaisieAchat();
-                if(!qteAchetee){
-                  bipTap();
-                  alert(`🖼️ تم التعرف على : ${meilleurProduit.nom}\nدخل الكمية المشتراة فـ الخانة وكليكي على "📥 دخل الكمية للسطوك".`);
-                  let qteEl = document.getElementById('qteAchatCourante');
-                  if(qteEl) qteEl.focus();
-                  return;
-                }
-                if(confirm(`🖼️ أقرب منتج للصورة هو : ${meilleurProduit.nom}\nواش نزيدو +${qteAchetee} فـ المخزون ؟`)){
-                  meilleurProduit.stock += qteAchetee;
-                  let ligne = achatSession.find(l=>l.code===meilleurProduit.code);
-                  if(ligne) ligne.qte += qteAchetee;
-                  else achatSession.push({code:meilleurProduit.code, nom:meilleurProduit.nom, prixAchat:meilleurProduit.prixAchat, prix:meilleurProduit.prix, qte:qteAchetee});
-                  document.getElementById('qteAchatCourante').value = '';
-                  save();
-                  majListeAchat();
-                  bipFort('achat');
-                  montrerToast(`✅ +${qteAchetee} ${meilleurProduit.nom} | المخزون: ${meilleurProduit.stock}`);
-                }
+              if(confirm(`🖼️ أقرب منتج للصورة هو : ${meilleurProduit.nom}\nواش نزيدو +${qteAchetee} فـ المخزون ؟`)){
+                meilleurProduit.stock += qteAchetee;
+                let ligne = achatSession.find(l=>l.code===meilleurProduit.code);
+                if(ligne) ligne.qte += qteAchetee;
+                else achatSession.push({code:meilleurProduit.code, nom:meilleurProduit.nom, prixAchat:meilleurProduit.prixAchat, prix:meilleurProduit.prix, qte:qteAchetee});
+                document.getElementById('qteAchatCourante').value = '';
+                save();
+                majListeAchat();
+                bipFort('achat');
+                montrerToast(`✅ +${qteAchetee} ${meilleurProduit.nom} | المخزون: ${meilleurProduit.stock}`);
               }
             }
-          });
+          }
         });
       });
     });
-  };
-  reader.readAsDataURL(file);
-  inp.value = '';
+  });
 }
 
 function afficherStock(){
@@ -713,7 +802,9 @@ function afficherTitreHeader(){
   let titleBlock = document.getElementById('headerTitleBlock');
   let scanArea = document.getElementById('headerScanArea');
   let btnCap = document.getElementById('btnCapturerPhotoProduit');
+  let btnReco = document.getElementById('btnReconPhotoHeader');
   if(btnCap) btnCap.style.display = 'none';
+  if(btnReco) btnReco.style.display = 'none';
   if(scanArea) scanArea.style.display = 'none';
   if(titleBlock) titleBlock.style.display = 'block';
 }
@@ -722,12 +813,16 @@ function afficherScanHeader(mode){
   let scanArea = document.getElementById('headerScanArea');
   let hint = document.getElementById('headerCamHint');
   let btnCap = document.getElementById('btnCapturerPhotoProduit');
+  let btnReco = document.getElementById('btnReconPhotoHeader');
   if(titleBlock) titleBlock.style.display = 'none';
   if(scanArea) scanArea.style.display = 'block';
   if(btnCap) btnCap.style.display = (mode === 'photo_produit') ? 'block' : 'none';
+  if(btnReco) btnReco.style.display = (mode === 'reco_photo') ? 'block' : 'none';
   if(hint){
     if(mode === 'photo_produit'){
       hint.textContent = 'حط المنتج وسط الكادر وكليكي على "التقط التصويرة"';
+    } else if(mode === 'reco_photo'){
+      hint.textContent = 'حط المنتج وسط الكادر وكليكي على "تعرف على الصورة دابا"';
     } else if(mode === 'achat'){
       hint.textContent = 'حط الباركود وسط الكادر - سكان = اختيار المنتج';
     } else {
@@ -742,12 +837,13 @@ async function startScan(mode){
   modeScan=mode;
   afficherScanHeader(mode);
 
-  if(mode !== 'photo_produit' && !('BarcodeDetector' in window)){
+  let modeSansBarcode = (mode === 'photo_produit' || mode === 'reco_photo');
+  if(!modeSansBarcode && !('BarcodeDetector' in window)){
     bipErreur();
     if(status) status.textContent='⚠️ الكاميرا ما كدعمش قراءة الباركود هنا';
     return;
   }
-  if(mode !== 'photo_produit' && !detector){
+  if(!modeSansBarcode && !detector){
     try{ detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code']}); }
     catch(e){ detector = new BarcodeDetector(); }
   }
@@ -758,26 +854,30 @@ async function startScan(mode){
     video.srcObject = streamActif;
     await video.play();
     scanEnCours=true;
+    appliquerFocusInterface();
     if(status){
       if(mode === 'photo_produit') status.textContent = '✅ الكاميرا خدامة (تصوير المنتج)';
+      else if(mode === 'reco_photo') status.textContent = '✅ الكاميرا خدامة (التعرف على الصورة)';
       else status.textContent = mode=='achat' ? '✅ الكاميرا خدامة (شراء)' : '✅ الكاميرا خدامة (بيع)';
     }
-    if(mode !== 'photo_produit') boucleScan(video);
+    if(!modeSansBarcode) boucleScan(video);
   }catch(e){
     stopScan();
+    definirVueFocalisee(document.getElementById('formProduit').style.display === 'block' ? 'form_produit' : 'normal');
     bipErreur();
     alert('الكاميرا ما حلتش.');
   }
 }
 async function boucleScan(video){
-  if(!scanEnCours || modeScan === 'photo_produit') return;
+  if(!scanEnCours || modeScan === 'photo_produit' || modeScan === 'reco_photo') return;
   try{
     let codes = await detector.detect(video);
     if(codes && codes.length>0){ onScan(codes[0].rawValue); await new Promise(r=>setTimeout(r, 900)); }
   }catch(e){}
-  if(scanEnCours && modeScan !== 'photo_produit') rafId = requestAnimationFrame(()=>boucleScan(video));
+  if(scanEnCours && modeScan !== 'photo_produit' && modeScan !== 'reco_photo') rafId = requestAnimationFrame(()=>boucleScan(video));
 }
 function stopScan(){
+  let wasPhotoProduit = (modeScan === 'photo_produit');
   scanEnCours=false;
   if(rafId) cancelAnimationFrame(rafId);
   if(streamActif){ streamActif.getTracks().forEach(t=>t.stop()); streamActif=null; }
@@ -786,6 +886,11 @@ function stopScan(){
   let s=document.getElementById('headerCamStatus');
   if(s) s.textContent='';
   afficherTitreHeader();
+  if(wasPhotoProduit && document.getElementById('formProduit') && document.getElementById('formProduit').style.display === 'block'){
+    definirVueFocalisee('form_produit');
+  } else {
+    definirVueFocalisee('normal');
+  }
 }
 
 function onScan(c){ if(!verifierAntiDouble(c)) return; if(modeScan=='vente'){ ajouterAuPanier(c,true); return; } traiterScanAchat(c); }
@@ -883,6 +988,7 @@ function viderPanier(){
   sortieEnCours=null;
   document.getElementById('choixPaiementBox').style.display='none';
   document.getElementById('formulaireCreditBox').style.display='none';
+  definirVueFocalisee('normal');
   afficherPanier();
   afficherStock();
   majCompteur();
@@ -913,7 +1019,8 @@ function demarrerSortieMarchandise(){
   document.getElementById('montantSortieLabel').textContent = total + ' درهم';
   document.getElementById('choixPaiementBox').style.display = 'block';
   document.getElementById('formulaireCreditBox').style.display = 'none';
-  document.getElementById('choixPaiementBox').scrollIntoView({behavior:'smooth'});
+  definirVueFocalisee('paiement_sortie');
+  window.scrollTo(0,0);
   montrerToast('📤 اختار خالص كاش ولا كريدي باش يتنقص من السطوك');
 }
 
@@ -932,6 +1039,7 @@ function validerPaiementCash(){
   sortieEnCours = null;
   document.getElementById('choixPaiementBox').style.display = 'none';
   document.getElementById('formulaireCreditBox').style.display = 'none';
+  definirVueFocalisee('normal');
   save();
   bipFort('vente');
   alert('✅ خالص كاش : ' + total + ' درهم (وتنقص من المخزون)');
@@ -941,7 +1049,13 @@ function ouvrirFormulaireCredit(){
   if(!sortieEnCours){ bipErreur(); return; } peuplerListesClients();
   let sel = document.getElementById('selectClientCredit'); let newBox = document.getElementById('nouveauClientBox'); let inp = document.getElementById('creditNomClient');
   if(sel){ if(clientsListe.length > 0){ sel.value = clientsListe[0]; if(newBox) newBox.style.display = 'none'; if(inp) inp.value = clientsListe[0]; } else { sel.value = '__NEW__'; if(newBox) newBox.style.display = 'block'; if(inp) inp.value = ''; } }
-  document.getElementById('formulaireCreditBox').style.display = 'block'; document.getElementById('creditArticles').value = sortieEnCours.articlesTexte; document.getElementById('creditPaye').value = '0'; majCalculCredit(); document.getElementById('formulaireCreditBox').scrollIntoView({behavior:'smooth'});
+  document.getElementById('choixPaiementBox').style.display = 'none';
+  document.getElementById('formulaireCreditBox').style.display = 'block';
+  document.getElementById('creditArticles').value = sortieEnCours.articlesTexte;
+  document.getElementById('creditPaye').value = '0';
+  majCalculCredit();
+  definirVueFocalisee('paiement_sortie');
+  window.scrollTo(0,0);
 }
 
 function majCalculCredit(){ if(!sortieEnCours) return; let total = sortieEnCours.total; let paye = parseFloat(document.getElementById('creditPaye').value); if(isNaN(paye) || paye < 0) paye = 0; if(paye > total) paye = total; document.getElementById('creditTotalAff').textContent = total + ' درهم'; document.getElementById('creditPayeAff').textContent = r2(paye) + ' درهم'; document.getElementById('creditResteAff').textContent = r2(total - paye) + ' درهم'; }
@@ -955,10 +1069,18 @@ function enregistrerCredit(){
   appliquerSortieAuStock(sortieEnCours.lignes);
   credits.unshift({ id: 'CR-' + maintenant + '-' + Math.floor(Math.random()*1000), ts: maintenant, client: nomClient, articles: articles, total: total, paye: r2(paye), reste: reste, date: new Date().toLocaleDateString('fr-MA') });
   sortieEnCours.lignes.forEach(l=>{ ventes.push({code:l.code,nom:l.nom,qte:l.qte,total:l.total,type:'credit',client:nomClient,date:sortieEnCours.date}); });
-  sortieEnCours = null; document.getElementById('choixPaiementBox').style.display = 'none'; document.getElementById('formulaireCreditBox').style.display = 'none'; save(); bipFort('vente');
+  sortieEnCours = null;
+  document.getElementById('choixPaiementBox').style.display = 'none';
+  document.getElementById('formulaireCreditBox').style.display = 'none';
+  definirVueFocalisee('normal');
+  save(); bipFort('vente');
   alert(`📒 تسجل الكريدي ديال ${nomClient} وتنقص من المخزون\nالمجموع : ${total} درهم | خلص : ${r2(paye)} درهم | بقا ليه : ${reste} درهم`);
 }
-function annulerCredit(){ document.getElementById('formulaireCreditBox').style.display = 'none'; }
+function annulerCredit(){
+  document.getElementById('formulaireCreditBox').style.display = 'none';
+  document.getElementById('choixPaiementBox').style.display = 'block';
+  definirVueFocalisee('paiement_sortie');
+}
 
 function payerVersementGlobalClient(nomClient){
   let opsClient = credits.filter(c => (String(c.client || '').trim() || 'بدون اسم') === nomClient && (c.reste || 0) > 0);
@@ -997,14 +1119,23 @@ function afficherCredits(){
 }
 
 function preparerAchat(code, retourTab){
-  retourApresEnregistrement = retourTab || 'achat'; bipFort('achat'); showTab('achat'); document.getElementById('formProduit').style.display='block';
-  document.getElementById('fCode').value=code; let p=trouver(code);
-  document.getElementById('fNom').value=p?p.nom:''; document.getElementById('fPrixAchat').value=p?(p.prixAchat||''):''; document.getElementById('fPrix').value=p?p.prix:'';
+  retourApresEnregistrement = retourTab || 'achat';
+  bipFort('achat');
+  showTab('achat');
+  document.getElementById('formProduit').style.display='block';
+  document.getElementById('fCode').value=code;
+  let p=trouver(code);
+  document.getElementById('fNom').value=p?p.nom:'';
+  document.getElementById('fPrixAchat').value=p?(p.prixAchat||''):'';
+  document.getElementById('fPrix').value=p?p.prix:'';
   let qteSaisie = lireQuantiteSaisieAchat();
   document.getElementById('fQte').value = qteSaisie ? qteSaisie : '';
   photoCouranteForm = p && p.photo ? p.photo : '';
   if(photoCouranteForm){ document.getElementById('fPhotoPreview').src = photoCouranteForm; document.getElementById('fPhotoPreviewBox').style.display = 'block'; } else { supprimerPhotoForm(); }
-  majPreviewBenefice(); document.getElementById('formProduit').scrollIntoView({behavior:'smooth'}); document.getElementById('fNom').focus();
+  majPreviewBenefice();
+  definirVueFocalisee('form_produit');
+  window.scrollTo(0,0);
+  document.getElementById('fNom').focus();
 }
 function majPreviewBenefice(){ let pa=parseFloat(document.getElementById('fPrixAchat').value)||0; let pv=parseFloat(document.getElementById('fPrix').value)||0; let el=document.getElementById('previewBenefice'); if(pa>0 && pv>0){ el.textContent=`💚 الربح : ${(pv-pa).toFixed(1)} درهم / وحدة`; } else { el.textContent=''; } }
 document.addEventListener('input', function(e){ if(['fPrixAchat','fPrix','fQte'].includes(e.target.id)) majPreviewBenefice(); });
@@ -1045,8 +1176,13 @@ function enregistrerProduit(){
   dernierProduitAchatCode = code;
   if(qte>0){ let ligne = achatSession.find(l=>l.code==code); if(ligne) ligne.qte+=qte; else achatSession.push({code,nom,prixAchat,prix,qte}); }
   document.getElementById('qteAchatCourante').value = '';
-  let destination = retourApresEnregistrement; retourApresEnregistrement = 'achat'; document.getElementById('formProduit').style.display='none';
-  save(); majListeAchat(); bipFort('achat'); alert('✅ تسجل : '+nom+' (المخزون الحالي : '+trouver(code).stock+' وحدة)'); if(destination === 'stock') showTab('stock');
+  let destination = retourApresEnregistrement;
+  retourApresEnregistrement = 'achat';
+  document.getElementById('formProduit').style.display='none';
+  definirVueFocalisee('normal');
+  save(); majListeAchat(); bipFort('achat');
+  alert('✅ تسجل : '+nom+' (المخزون الحالي : '+trouver(code).stock+' وحدة)');
+  if(destination === 'stock') showTab('stock');
 }
 
 function exporterDonnees(){
@@ -1073,7 +1209,7 @@ function importerDonnees(inp){
   };
   reader.readAsText(file);
 }
-function resetTout(){if(confirm('تمسح كلشي ؟')){produits=[]; ventes=[]; credits=[]; clientsListe=[]; panier=[]; scansClient=0; compteurScans=0; achatSession=[]; dernierProduitAchatCode=''; sortieEnCours=null; save(); afficherPanier(); majCompteur(); majListeAchat(); bipFort('achat');}}
+function resetTout(){if(confirm('تمسح كلشي ؟')){produits=[]; ventes=[]; credits=[]; clientsListe=[]; panier=[]; scansClient=0; compteurScans=0; achatSession=[]; dernierProduitAchatCode=''; sortieEnCours=null; definirVueFocalisee('normal'); save(); afficherPanier(); majCompteur(); majListeAchat(); bipFort('achat');}}
 
 function afficherInfosClient(){
   let h = document.getElementById('nomClientHeader');
@@ -1121,7 +1257,7 @@ function verifierLicence(){
 verifierLicence();
 
 if(produits.length==0){produits=[{code:'6111203004024',nom:'فرماج الحمد',prix:12,prixAchat:9,stock:8,sansCode:false,photo:''},{code:'6111035000123',nom:'زيت لوسيور 1 لتر',prix:28,prixAchat:22,stock:15,sansCode:false,photo:''},{code:'SANS-001',nom:'خبز',prix:1.5,prixAchat:1,stock:30,sansCode:true,photo:''},{code:'SANS-002',nom:'بيض بلدي',prix:1.8,prixAchat:1.2,stock:50,sansCode:true,photo:''}]; save();}
-peuplerListesClients(); afficherStatsVentes(); afficherStock(); afficherPanier(); afficherCredits(); majCompteur(); majListeAchat();
+peuplerListesClients(); afficherStatsVentes(); afficherStock(); afficherPanier(); afficherCredits(); majCompteur(); majListeAchat(); appliquerFocusInterface();
 </script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("./sw.js").catch(()=>{});});}</script>
 </body>
