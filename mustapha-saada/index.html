@@ -53,6 +53,13 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 .btn-green{background:#0D7A3E;color:#fff} .btn-black{background:#111;color:#fff} .btn-orange{background:#FF7A00;color:#fff} .btn-red{background:#E63946;color:#fff} .btn-grey{background:#E9ECEF;color:#111} .btn-blue{background:#007BFF;color:#fff} .btn-purple{background:#6D28D9;color:#fff}
 .compteur{background:#FFF3CD;border:2px solid #FFC107;border-radius:12px;padding:12px;text-align:center;font-weight:900;font-size:15px;margin-bottom:8px}
 .compteur.ok{background:#E6F7ED;border-color:#0D7A3E} .compteur.erreur{background:#FFE8E8;border-color:#E63946}
+.qte-selection-box{background:#F8FAFC;border:1px solid #CBD5E1;border-radius:12px;padding:10px;margin-bottom:10px}
+.qte-selection-title{font-size:13px;font-weight:800;color:#0F172A;margin-bottom:8px}
+.qte-controls-row{display:flex;align-items:center;gap:8px}
+.qte-step-btn{width:46px;height:44px;border:0;border-radius:10px;font-size:20px;font-weight:900;cursor:pointer;color:#fff;flex-shrink:0}
+.qte-step-btn.plus{background:#0D7A3E}
+.qte-step-btn.minus{background:#E63946}
+.qte-direct-input{flex:1;margin-bottom:0 !important;height:44px;text-align:center !important;font-weight:900 !important;font-size:16px !important}
 .prod{display:flex;gap:10px;background:#fff;padding:14px;border-radius:14px;margin-bottom:8px;align-items:center;border:1px solid #eee;border-right:6px solid #0D7A3E}
 .prod.danger{border-right:6px solid #E63946;background:#FFF1F2}
 .prod.epuise{background:#FFCCCC !important;border-right:8px solid #B00000 !important}
@@ -202,7 +209,16 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 <div id="ventePanierBox" class="box">
 <h3>🧾 سلة الكليان</h3>
 <div id="compteurScan" class="compteur">📷 السكانات : 0 | 🛒 السلة : 0</div>
-<button class="btn btn-grey" onclick="bipTap(); resetCompteur()">🔄 صفر العداد</button>
+
+<div id="controleQteVenteBox" class="qte-selection-box">
+  <div id="titreQteVente" class="qte-selection-title">المنتج المختار : ما كاين حتى منتج فـ السلة</div>
+  <div class="qte-controls-row">
+    <button type="button" class="qte-step-btn plus" onclick="modifierQteProduitActuel(1)">+</button>
+    <input id="qteProduitActuelInput" type="number" min="0" step="1" class="qte-direct-input" placeholder="0" onchange="appliquerQteDirecteProduitActuel(this.value)">
+    <button type="button" class="qte-step-btn minus" onclick="modifierQteProduitActuel(-1)">-</button>
+  </div>
+</div>
+
 <div id="panier"></div>
 <div class="total">المجموع : <span id="totalVente">0 درهم</span></div>
 <button class="btn btn-green" onclick="demarrerSortieMarchandise()">📤 خرج السلعة</button>
@@ -344,7 +360,8 @@ let produits = lire('produits');
 let ventes = lire('ventes');
 let credits = lire('credits');
 let clientsListe = lire('clients');
-let panier = []; let modeScan='vente'; let modeReconnaissancePhoto='vente'; let audioCtx=null;
+let panier = []; let codeProduitActuelVente = '';
+let modeScan='vente'; let modeReconnaissancePhoto='vente'; let audioCtx=null;
 let dernierCode=''; let dernierTemps=0; const DELAI=1000;
 let compteurScans=parseInt(localStorage.getItem(cleClient('compteur_scans'))||'0')||0; let scansClient=0;
 let streamActif=null; let scanEnCours=false; let rafId=null; let detector=null;
@@ -637,7 +654,123 @@ function majCompteur(){
   if(scansClient!==totalPanier){el.className='compteur erreur';} else if(scansClient>0){el.className='compteur ok';} else {el.className='compteur';}
   localStorage.setItem(cleClient('compteur_scans'), String(compteurScans));
 }
-function resetCompteur(){scansClient=0; majCompteur();}
+
+function obtenirLigneActiveVente(){
+  if(panier.length === 0){
+    codeProduitActuelVente = '';
+    return null;
+  }
+  let ligne = panier.find(l => l.code === codeProduitActuelVente);
+  if(!ligne){
+    ligne = panier[panier.length - 1];
+    codeProduitActuelVente = ligne.code;
+  }
+  return ligne;
+}
+
+function majControleQteVente(){
+  let titreEl = document.getElementById('titreQteVente');
+  let inpEl = document.getElementById('qteProduitActuelInput');
+  if(!titreEl || !inpEl) return;
+  let ligne = obtenirLigneActiveVente();
+  if(!ligne){
+    titreEl.textContent = 'المنتج المختار : ما كاين حتى منتج فـ السلة';
+    inpEl.value = '';
+    return;
+  }
+  let p = trouver(ligne.code);
+  let maxStock = p ? p.stock : ligne.qte;
+  titreEl.textContent = `المنتج المختار : ${ligne.nom} (المخزون: ${maxStock})`;
+  inpEl.value = String(ligne.qte);
+}
+
+function اختيارProduitActuelVente(code){
+  bipTap();
+  codeProduitActuelVente = code;
+  majControleQteVente();
+}
+
+function modifierQteProduitActuel(delta){
+  let ligne = obtenirLigneActiveVente();
+  if(!ligne){ bipErreur(); return; }
+  let p = trouver(ligne.code);
+  let maxStock = p ? p.stock : ligne.qte;
+  let qteNouvelle = ligne.qte + delta;
+
+  if(qteNouvelle > maxStock){
+    bipEpuise();
+    alert('⛔ سالا المخزون ديال ' + ligne.nom);
+    return;
+  }
+
+  if(qteNouvelle <= 0){
+    let diff = ligne.qte;
+    panier = panier.filter(l => l.code !== ligne.code);
+    scansClient = Math.max(0, scansClient - diff);
+    codeProduitActuelVente = panier.length > 0 ? panier[panier.length - 1].code : '';
+    bipTap();
+    afficherPanier();
+    majCompteur();
+    majControleQteVente();
+    return;
+  }
+
+  let diff = qteNouvelle - ligne.qte;
+  ligne.qte = qteNouvelle;
+  if(diff > 0){
+    scansClient += diff;
+    compteurScans += diff;
+    bipFort('vente');
+  } else {
+    scansClient = Math.max(0, scansClient + diff);
+    bipTap();
+  }
+  afficherPanier();
+  majCompteur();
+  majControleQteVente();
+}
+
+function appliquerQteDirecteProduitActuel(val){
+  let ligne = obtenirLigneActiveVente();
+  if(!ligne){ bipErreur(); majControleQteVente(); return; }
+  let qteNouvelle = parseInt(val, 10);
+  if(isNaN(qteNouvelle)){ majControleQteVente(); return; }
+  let p = trouver(ligne.code);
+  let maxStock = p ? p.stock : ligne.qte;
+
+  if(qteNouvelle > maxStock){
+    bipEpuise();
+    alert('⛔ سالا المخزون ديال ' + ligne.nom);
+    majControleQteVente();
+    return;
+  }
+
+  if(qteNouvelle <= 0){
+    let diff = ligne.qte;
+    panier = panier.filter(l => l.code !== ligne.code);
+    scansClient = Math.max(0, scansClient - diff);
+    codeProduitActuelVente = panier.length > 0 ? panier[panier.length - 1].code : '';
+    bipTap();
+    afficherPanier();
+    majCompteur();
+    majControleQteVente();
+    return;
+  }
+
+  let diff = qteNouvelle - ligne.qte;
+  ligne.qte = qteNouvelle;
+  if(diff > 0){
+    scansClient += diff;
+    compteurScans += diff;
+    bipFort('vente');
+  } else if(diff < 0){
+    scansClient = Math.max(0, scansClient + diff);
+    bipTap();
+  }
+  afficherPanier();
+  majCompteur();
+  majControleQteVente();
+}
 
 function montrerToast(m){let t=document.getElementById('toast'); t.textContent=m; t.style.opacity=1; clearTimeout(t._timer); t._timer=setTimeout(()=>t.style.opacity=0,1600);}
 function verifierAntiDouble(code){
@@ -1177,11 +1310,29 @@ function ajouterAuPanier(code,deja){
   if(p.stock-dejaPan<=0){bipEpuise(); alert('⛔ سالا المخزون ديال '+p.nom); return;}
   bipFort('vente'); scansClient++; compteurScans++;
   if(ligne) ligne.qte++; else panier.push({code:p.code,nom:p.nom,prix:p.prix,qte:1});
-  afficherPanier(); majCompteur();
+  codeProduitActuelVente = p.code;
+  afficherPanier(); majCompteur(); majControleQteVente();
 }
 function ajouterVenteManuel(){ let inp = document.getElementById('codeVenteManuel'); let c = (inp.value || '').trim(); if(!c){ bipErreur(); return; } let p = trouverParCodeOuNom(c); let box = document.getElementById('suggestionsVente'); if(box){ box.style.display='none'; box.innerHTML=''; } if(p){ ajouterAuPanier(p.code, false); } else { ajouterAuPanier(c, false); } inp.value = ''; }
-function afficherPanier(){ let html=''; let total=0; panier.forEach((l,i)=>{ let sous=r2(l.prix*l.qte); total+=sous; html+=`<div class="cart-item"><span>${esc(l.nom)} x ${l.qte}</span><span>${sous} درهم <button onclick="retirerDuPanier(${i})">❌</button></span></div>`; }); document.getElementById('panier').innerHTML=html||'السلة خاوية'; document.getElementById('totalVente').textContent=r2(total)+' درهم'; }
-function retirerDuPanier(i){ bipTap(); let l=panier[i]; if(l) scansClient=Math.max(0,scansClient-l.qte); panier.splice(i,1); afficherPanier(); majCompteur(); }
+function afficherPanier(){
+  let html=''; let total=0;
+  panier.forEach((l,i)=>{
+    let sous=r2(l.prix*l.qte); total+=sous;
+    let isActif = (l.code === codeProduitActuelVente);
+    html+=`<div class="cart-item" onclick="اختيارProduitActuelVente('${esc(l.code)}')" style="${isActif?'background:#E6F7ED;border-radius:8px;padding:10px 8px':''}"><span><b>${esc(l.nom)}</b> x ${l.qte}</span><span>${sous} درهم <button onclick="event.stopPropagation(); retirerDuPanier(${i})">❌</button></span></div>`;
+  });
+  document.getElementById('panier').innerHTML=html||'السلة خاوية';
+  document.getElementById('totalVente').textContent=r2(total)+' درهم';
+  majControleQteVente();
+}
+function retirerDuPanier(i){
+  bipTap(); let l=panier[i];
+  if(l){
+    scansClient=Math.max(0,scansClient-l.qte);
+    if(codeProduitActuelVente === l.code) codeProduitActuelVente = '';
+  }
+  panier.splice(i,1); afficherPanier(); majCompteur(); majControleQteVente();
+}
 
 function demarrerSortieMarchandise(){
   if(panier.length==0){bipErreur(); alert('السلة خاوية'); return;}
@@ -1198,6 +1349,7 @@ function demarrerSortieMarchandise(){
     date: new Date().toISOString()
   };
   panier=[];
+  codeProduitActuelVente='';
   scansClient=0;
   dernierCode='';
   dernierTemps=0;
@@ -1397,7 +1549,7 @@ function importerDonnees(inp){
   };
   reader.readAsText(file);
 }
-function resetTout(){if(confirm('تمسح كلشي ؟')){produits=[]; ventes=[]; credits=[]; clientsListe=[]; panier=[]; scansClient=0; compteurScans=0; achatSession=[]; dernierProduitAchatCode=''; sortieEnCours=null; definirVueFocalisee('normal'); save(); afficherPanier(); majCompteur(); majListeAchat(); bipFort('achat');}}
+function resetTout(){if(confirm('تمسح كلشي ؟')){produits=[]; ventes=[]; credits=[]; clientsListe=[]; panier=[]; codeProduitActuelVente=''; scansClient=0; compteurScans=0; achatSession=[]; dernierProduitAchatCode=''; sortieEnCours=null; definirVueFocalisee('normal'); save(); afficherPanier(); majCompteur(); majListeAchat(); bipFort('achat');}}
 
 function afficherInfosClient(){
   let h = document.getElementById('nomClientHeader');
