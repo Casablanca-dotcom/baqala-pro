@@ -1,4 +1,4 @@
-const CACHE_NAME = 'baqala-pro-v18';
+const CACHE_NAME = 'baqala-pro-v7';
 const ASSETS = [
   './',
   './index.html',
