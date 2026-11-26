@@ -68,7 +68,8 @@ label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
 .prix button{padding:6px 12px;font-size:16px;font-weight:900;border:1px solid #ddd;background:#fff;border-radius:8px;cursor:pointer}
 .cart-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 6px;border-bottom:1px dashed #ddd;font-size:14px}
 .cart-item-nom{flex:1;min-width:0}
-.cart-item-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.cart-item-qte-mid{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.cart-item-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
 .cart-qte-btn{width:30px;height:30px;border:0;border-radius:8px;font-size:16px;font-weight:900;cursor:pointer;color:#fff;line-height:1}
 .cart-qte-btn.plus{background:#0D7A3E}
 .cart-qte-btn.minus{background:#E63946}
@@ -1237,7 +1238,7 @@ function afficherPanier(){
     let sous=r2(l.prix*l.qte); total+=sous;
     let isActif = (l.code === codeProduitActuelVente);
     let c = esc(l.code);
-    html+=`<div class="cart-item" onclick="اختيارProduitActuelVente('${c}')" style="${isActif?'background:#E6F7ED;border-radius:8px':''}"><span class="cart-item-nom"><b>${esc(l.nom)}</b> • ${sous} درهم</span><div class="cart-item-actions" onclick="event.stopPropagation()"><button type="button" class="cart-qte-btn minus" onclick="changerQteLignePanier('${c}',-1)">-</button><span class="cart-qte-num">${l.qte}</span><button type="button" class="cart-qte-btn plus" onclick="changerQteLignePanier('${c}',1)">+</button><button type="button" onclick="retirerDuPanier(${i})">❌</button></div></div>`;
+    html+=`<div class="cart-item" onclick="اختيارProduitActuelVente('${c}')" style="${isActif?'background:#E6F7ED;border-radius:8px':''}"><span class="cart-item-nom"><b>${esc(l.nom)}</b></span><div class="cart-item-qte-mid" onclick="event.stopPropagation()"><button type="button" class="cart-qte-btn minus" onclick="changerQteLignePanier('${c}',-1)">-</button><span class="cart-qte-num">${l.qte}</span><button type="button" class="cart-qte-btn plus" onclick="changerQteLignePanier('${c}',1)">+</button></div><div class="cart-item-right"><span>${sous} درهم</span><button type="button" onclick="event.stopPropagation(); retirerDuPanier(${i})">❌</button></div></div>`;
   });
   document.getElementById('panier').innerHTML=html||'السلة خاوية';
   document.getElementById('totalVente').textContent=r2(total)+' درهم';
