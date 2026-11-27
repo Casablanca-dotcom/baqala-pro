@@ -1,4 +1,418 @@
-function formaterDateInput(dt){
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بقالة مصطفى سعادة - تجربة 7 أيام</title>
+<link rel="manifest" href="./manifest.json" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Tahoma,sans-serif}
+body{background:#F2F2F2;padding-bottom:95px;direction:rtl}
+header{position:fixed;top:0;left:0;right:0;z-index:90;background:#0D7A3E;color:#fff;padding:12px 16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+header h1{font-size:22px;line-height:1.2} header p{font-size:11px;opacity:.9;margin-top:2px}
+header .client-tag{font-size:11px;margin-top:4px;opacity:.95;font-weight:700;background:rgba(0,0,0,.18);display:inline-block;padding:3px 10px;border-radius:10px}
+.header-scan-area{display:none;margin-top:6px;text-align:right;max-height:78vh;overflow-y:auto}
+.header-scan-area video{width:100%;height:220px;object-fit:cover;display:block;background:#000;border-radius:12px}
+.header-cam-wrap{position:relative;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,.45)}
+.header-cam-wrap .cadre{position:absolute;left:12%;right:12%;top:28%;height:92px;border:3px solid #00FF00;border-radius:12px;pointer-events:none}
+.header-cam-wrap .txt{position:absolute;bottom:6px;left:0;right:0;text-align:center;color:#fff;font-size:12px;background:rgba(0,0,0,.65);padding:5px}
+.header-status{font-size:12px;text-align:center;color:#E6F7ED;margin:8px 0;font-weight:700}
+.reco-qte-box{display:none;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px;margin-bottom:8px;text-align:right}
+.reco-qte-box label{color:#fff;font-size:12px;margin-bottom:4px}
+.reco-qte-box input{margin-bottom:0;color:#111;font-weight:800}
+.home{display:block;padding:104px 16px 16px}
+.home button.main-nav-btn{width:100%;padding:22px 12px;margin-bottom:13px;border:0;border-radius:18px;font-weight:900;font-size:20px;color:#fff;cursor:pointer}
+.home button.main-nav-btn small{display:block;font-size:13px;font-weight:400;opacity:.9;margin-top:4px}
+.home .b-vente{background:#0D7A3E} .home .b-achat{background:#FF7A00} .home .b-stock{background:#111} .home .b-credits{background:#B45309} .home .b-stats{background:#0F2942}
+.section{display:none;padding:154px 12px 12px} .section.active{display:block}
+.topbar{position:fixed;top:88px;left:0;right:0;z-index:85;display:flex;padding:6px 12px;background:#F2F2F2;border-bottom:1px solid #e2e2e2;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.topbar button.home-btn{width:100%;padding:11px 12px;border:1px solid #ccc;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;background:#fff;color:#111}
+.box{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
+.box h3{font-size:16px;margin-bottom:10px}
+.box-total{background:#0D7A3E;color:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
+.box-total .ligne{display:flex;justify-content:space-between;padding:7px 0;font-size:15px}
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بقالة مصطفى سعادة - تجربة 7 أيام</title>
+<link rel="manifest" href="./manifest.json" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Tahoma,sans-serif}
+body{background:#F2F2F2;padding-bottom:95px;direction:rtl}
+header{position:fixed;top:0;left:0;right:0;z-index:90;background:#0D7A3E;color:#fff;padding:12px 16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+header h1{font-size:22px;line-height:1.2} header p{font-size:11px;opacity:.9;margin-top:2px}
+header .client-tag{font-size:11px;margin-top:4px;opacity:.95;font-weight:700;background:rgba(0,0,0,.18);display:inline-block;padding:3px 10px;border-radius:10px}
+.header-scan-area{display:none;margin-top:6px;text-align:right;max-height:78vh;overflow-y:auto}
+.header-scan-area video{width:100%;height:220px;object-fit:cover;display:block;background:#000;border-radius:12px}
+.header-cam-wrap{position:relative;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,.45)}
+.header-cam-wrap .cadre{position:absolute;left:12%;right:12%;top:28%;height:92px;border:3px solid #00FF00;border-radius:12px;pointer-events:none}
+.header-cam-wrap .txt{position:absolute;bottom:6px;left:0;right:0;text-align:center;color:#fff;font-size:12px;background:rgba(0,0,0,.65);padding:5px}
+.header-status{font-size:12px;text-align:center;color:#E6F7ED;margin:8px 0;font-weight:700}
+.reco-qte-box{display:none;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px;margin-bottom:8px;text-align:right}
+.reco-qte-box label{color:#fff;font-size:12px;margin-bottom:4px}
+.reco-qte-box input{margin-bottom:0;color:#111;font-weight:800}
+.home{display:block;padding:104px 16px 16px}
+.home button.main-nav-btn{width:100%;padding:22px 12px;margin-bottom:13px;border:0;border-radius:18px;font-weight:900;font-size:20px;color:#fff;cursor:pointer}
+.home button.main-nav-btn small{display:block;font-size:13px;font-weight:400;opacity:.9;margin-top:4px}
+.home .b-vente{background:#0D7A3E} .home .b-achat{background:#FF7A00} .home .b-stock{background:#111} .home .b-credits{background:#B45309} .home .b-stats{background:#0F2942}
+.section{display:none;padding:154px 12px 12px} .section.active{display:block}
+.topbar{position:fixed;top:88px;left:0;right:0;z-index:85;display:flex;padding:6px 12px;background:#F2F2F2;border-bottom:1px solid #e2e2e2;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.topbar button.home-btn{width:100%;padding:11px 12px;border:1px solid #ccc;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;background:#fff;color:#111}
+.box{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
+.box h3{font-size:16px;margin-bottom:10px}
+.box-total{background:#0D7A3E;color:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
+.box-total .ligne{display:flex;justify-content:space-between;padding:7px 0;font-size:15px}
+  .box-total .ligne:last-child{font-weight:900;font-size:17px;border-top:1px solid rgba(255,255,255,.4);margin-top:6px;padding-top:10px}
+.alert-rupture-box{display:none;background:#FFF1F2;border:2px solid #E63946;border-radius:16px;padding:14px;margin-bottom:12px}
+.alert-rupture-box h3{color:#B00000;font-size:15px;margin-bottom:8px}
+.alert-rupture-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 8px;background:#fff;border-radius:10px;margin-bottom:6px;border-right:4px solid #E63946;font-size:12px}
+.alert-rupture-item:last-child{margin-bottom:0}
+.rythme-tag{display:inline-block;background:#EFF6FF;color:#1D4ED8;padding:2px 7px;border-radius:7px;font-weight:800;font-size:11px;margin-top:4px}
+.rythme-tag.urgent{background:#FEE2E2;color:#B91C1C}
+.sales-stats-box{background:#0F2942;color:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
+.sales-stats-box h3{font-size:16px;margin-bottom:10px}
+.sales-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.sales-stat-card{background:rgba(255,255,255,.12);border-radius:12px;padding:10px 8px;text-align:center}
+.sales-stat-card small{display:block;font-size:11px;opacity:.85;margin-bottom:4px}
+.sales-stat-card b{font-size:14px;font-weight:900;color:#86EFAC;display:block}
+.date-filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.date-filter-grid label{color:#E2E8F0}
+.date-filter-grid input{color:#111;text-align:center}
+.quick-range-btns{display:flex;gap:6px;margin-bottom:10px}
+.quick-range-btns button{flex:1;padding:8px;border:0;border-radius:10px;background:rgba(255,255,255,.16);color:#fff;font-weight:800;font-size:12px;cursor:pointer}
+.periode-result-box{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px;margin-bottom:10px}
+.periode-total-line{display:flex;justify-content:space-between;align-items:center;font-size:16px;font-weight:900;color:#86EFAC;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)}
+.vente-historique-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.15);font-size:12px}
+.vente-historique-row:last-child{border-bottom:0}
+input,textarea,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin-bottom:8px;font-size:15px;text-align:right;font-family:Arial,Tahoma,sans-serif;background:#fff}
+label{font-size:13px;font-weight:700;display:block;margin-bottom:4px}
+.btn{width:100%;padding:14px;border:0;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;margin-bottom:8px}
+.btn-green{background:#0D7A3E;color:#fff} .btn-black{background:#111;color:#fff} .btn-orange{background:#FF7A00;color:#fff} .btn-red{background:#E63946;color:#fff} .btn-grey{background:#E9ECEF;color:#111} .btn-blue{background:#007BFF;color:#fff} .btn-purple{background:#6D28D9;color:#fff}
+.compteur{background:#FFF3CD;border:2px solid #FFC107;border-radius:12px;padding:12px;text-align:center;font-weight:900;font-size:15px;margin-bottom:8px}
+.compteur.ok{background:#E6F7ED;border-color:#0D7A3E} .compteur.erreur{background:#FFE8E8;border-color:#E63946}
+.prod{display:flex;gap:10px;background:#fff;padding:14px;border-radius:14px;margin-bottom:8px;align-items:center;border:1px solid #eee;border-right:6px solid #0D7A3E}
+.prod.danger{border-right:6px solid #E63946;background:#FFF1F2}
+.prod.epuise{background:#FFCCCC !important;border-right:8px solid #B00000 !important}
+.prod.sans-code{border-right:6px solid #007BFF !important}
+.emoji{font-size:28px;min-width:54px;text-align:center}
+.prod-thumb{width:54px;height:54px;border-radius:10px;object-fit:cover;border:1px solid #ddd;display:block}
+.info{flex:1} .info b{font-size:16px} .info small{color:#555;font-size:12px;display:block;margin-top:3px}
+.badge-stock{display:inline-block;padding:3px 8px;border-radius:8px;font-weight:900;font-size:12px;margin-top:4px}
+.badge-ok{background:#E6F7ED;color:#0D7A3E}
+.badge-low{background:#FFF3CD;color:#B45309}
+.badge-out{background:#B00000;color:#fff}
+.prix{font-weight:900;color:#0D7A3E;font-size:16px;text-align:left;min-width:92px} .prix small{display:block;color:#111;font-weight:400;font-size:12px;margin-top:4px}
+.prix button{padding:6px 12px;font-size:16px;font-weight:900;border:1px solid #ddd;background:#fff;border-radius:8px;cursor:pointer}
+.cart-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 6px;border-bottom:1px dashed #ddd;font-size:14px}
+.cart-item-nom{flex:1;min-width:0}
+.cart-item-qte-mid{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.cart-item-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.cart-qte-btn{width:30px;height:30px;border:0;border-radius:8px;font-size:16px;font-weight:900;cursor:pointer;color:#fff;line-height:1}
+.cart-qte-btn.plus{background:#0D7A3E}
+.cart-qte-btn.minus{background:#E63946}
+.cart-qte-num{min-width:24px;text-align:center;font-weight:900;font-size:14px}
+  .total{font-size:22px;font-weight:900;text-align:left;margin:10px 0}
+.photo-preview-box{text-align:center;margin:8px 0;padding:10px;background:#F8F9FA;border-radius:12px;border:1px dashed #ccc}
+.photo-preview-box img{max-width:130px;max-height:130px;border-radius:12px;border:2px solid #0D7A3E;object-fit:cover}
+.choix-paiement{display:none;background:#F8F9FA;border:2px solid #0D7A3E;border-radius:14px;padding:14px;margin-top:10px}
+.choix-btns{display:flex;gap:8px;margin-top:8px}
+.credit-form{display:none;background:#FFF8E7;border:2px solid #FF7A00;border-radius:14px;padding:14px;margin-top:10px}
+.credit-resume{background:#fff;border-radius:10px;padding:10px;margin:8px 0;border:1px solid #eee}
+.credit-resume div{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;font-weight:700}
+.credit-card{background:#FFF9EB;border:1px solid #F59E0B;border-right:6px solid #FF7A00;border-radius:12px;padding:14px;margin-bottom:12px}
+.credit-card.solde{background:#E6F7ED;border-color:#0D7A3E;border-right-color:#0D7A3E}
+.credit-card b{font-size:16px;display:block;margin-bottom:4px}
+.credit-card small{display:block;color:#444;font-size:12px;margin-top:3px}
+.credit-ops{background:rgba(255,255,255,.75);border-radius:10px;padding:8px 10px;margin-top:8px;border:1px dashed #d97706}
+.credit-op-row{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:5px 0;border-bottom:1px dashed #e5e7eb;font-size:12px}
+.credit-op-row:last-child{border-bottom:0}
+.search-results{background:#fff;border:1px solid #ddd;border-radius:10px;margin-bottom:8px;max-height:180px;overflow-y:auto;display:none}
+.search-item{padding:10px 12px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:14px}
+.search-item:last-child{border-bottom:0}
+.search-item:hover,.search-item:active{background:#E6F7ED}
+.footer-backup-wrap{position:fixed;bottom:10px;left:12px;right:12px;display:flex;justify-content:center;pointer-events:none;z-index:50}
+.footer-backup-btn{pointer-events:auto;background:#1F2937;color:#fff;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:8px 16px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.22)}
+#flash{position:fixed;inset:0;background:#0D7A3E;opacity:0;pointer-events:none;z-index:99}
+#flashEpuise{position:fixed;inset:0;background:#E63946;opacity:0;pointer-events:none;z-index:100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:900;text-align:center}
+#toast{position:fixed;bottom:48px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;z-index:200;transition:.2s;white-space:nowrap}
+#ecranExpire{display:none;position:fixed;inset:0;background:#111;color:#fff;z-index:9999;padding:24px;text-align:center;flex-direction:column;justify-content:center;align-items:center}
+</style>
+</head>
+<body>
+<div id="flash"></div>
+<div id="flashEpuise">⛔ سالا المخزون</div>
+<div id="toast"></div>
+
+<div id="ecranExpire">
+  <div style="background:#1E1E1E;border:2px solid #E63946;border-radius:18px;padding:24px;max-width:380px;width:100%">
+    <div style="font-size:42px;margin-bottom:10px">🔒</div>
+    <h2 style="margin-bottom:6px;font-size:20px">سالات مدة التجربة (7 أيام)</h2>
+    <p id="nomClientBlocage" style="font-size:13px;color:#9BE7B8;margin-bottom:10px;font-weight:700"></p>
+    <p id="messageBlocage" style="font-size:14px;color:#ddd;margin-bottom:16px">تواصل مع البائع باش تفعل التطبيق.</p>
+    <input id="codeActivation" type="text" placeholder="دخل كود التفعيل" style="width:100%;padding:12px;border-radius:10px;border:1px solid #555;background:#fff;color:#111;margin-bottom:10px;text-align:center;font-weight:bold">
+    <button onclick="verifierCodeActivation()" style="width:100%;padding:13px;border:0;border-radius:12px;background:#0D7A3E;color:#fff;font-weight:900;font-size:15px;cursor:pointer">🔓 تفعيل التطبيق</button>
+  </div>
+</div>
+
+<header id="appHeader">
+  <div id="headerTitleBlock">
+    <h1>🛒 بقالة برو</h1>
+    <p>البيع • المخزون • الباركود</p>
+    <div id="nomClientHeader" class="client-tag"></div>
+  </div>
+  <div id="headerScanArea" class="header-scan-area">
+    <div class="header-cam-wrap">
+      <video id="headerVideo" playsinline muted></video>
+      <div class="cadre"></div>
+      <div id="headerCamHint" class="txt">حط الباركود ولا الصورة وسط الكادر الخضر</div>
+    </div>
+    <div id="headerCamStatus" class="header-status"></div>
+    <div id="recoHeaderQteBox" class="reco-qte-box">
+      <label for="recoHeaderQteInput">📦 الكمية المشتراة للمنتج (افتراضي: 1)</label>
+      <input id="recoHeaderQteInput" type="number" min="1" step="1" placeholder="مثال: 5 (أو خليها خاوية لـ 1)">
+    </div>
+    <button type="button" id="btnReconSmartAchatHeader" class="btn btn-purple" style="display:none;margin-bottom:6px" onclick="bipTap(); capturerEtReconnaitreDepuisHeader()">🖼️ تعرف على الصورة (شراء)</button>
+    <button type="button" id="btnCapturerPhotoProduit" class="btn btn-green" style="display:none;margin-bottom:6px" onclick="bipTap(); capturerPhotoProduitDepuisHeader()">📸 التقط التصويرة</button>
+    <button type="button" id="btnReconPhotoHeader" class="btn btn-purple" style="display:none;margin-bottom:6px" onclick="bipTap(); capturerEtReconnaitreDepuisHeader()">📸 التقط ومسح الصورة دابا</button>
+    <button type="button" class="btn btn-grey" style="margin-bottom:0" onclick="bipTap(); stopScan()">⏹️ حبس الكاميرا</button>
+  </div>
+</header>
+
+<div id="home" class="home">
+<button class="main-nav-btn b-vente" onclick="bipTap(); showTab('vente')">🛒 بيع<small>بيع للكليان - سكاني و خرج السلعة</small></button>
+<button class="main-nav-btn b-achat" onclick="bipTap(); showTab('achat')">📥 شراء<small>زيد السلع للمخزون</small></button>
+<button class="main-nav-btn b-stock" onclick="bipTap(); showTab('stock')">📦 مخزون<small>شوف شحال بقا ليك وتنبيهات النفاذ</small></button>
+<button class="main-nav-btn b-credits" onclick="bipTap(); showTab('credits')">📒 سجل الكريديات<small>شوف الكريديات ديال الكليان و شحال بقا ليهم</small></button>
+<button class="main-nav-btn b-stats" onclick="bipTap(); showTab('stats')">📊 ملخص المبيعات<small>شوف المبيعات بالتواريخ</small></button>
+</div>
+<div id="stats" class="section">
+<div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
+
+<div class="sales-stats-box">
+  <h3>📊 ملخص المبيعات</h3>
+  <div class="sales-stats-grid">
+    <div class="sales-stat-card">
+      <small>مبيعات اليوم</small>
+      <b id="venteJour">0 درهم</b>
+    </div>
+    <div class="sales-stat-card">
+      <small>مبيعات الشهر</small>
+      <b id="venteMois">0 درهم</b>
+    </div>
+    <div class="sales-stat-card">
+      <small>مبيعات السنة</small>
+      <b id="venteAnnee">0 درهم</b>
+    </div>
+  </div>
+
+  <div class="quick-range-btns">
+    <button type="button" onclick="bipTap(); definirPeriodeRapide('jour')">اليوم</button>
+    <button type="button" onclick="bipTap(); definirPeriodeRapide('mois')">هذا الشهر</button>
+    <button type="button" onclick="bipTap(); definirPeriodeRapide('annee')">هذه السنة</button>
+  </div>
+
+  <div class="date-filter-grid">
+    <div>
+      <label for="dateDebutVentes">من تاريخ</label>
+      <input id="dateDebutVentes" type="date" onchange="afficherStatsVentes()">
+    </div>
+    <div>
+      <label for="dateFinVentes">إلى تاريخ</label>
+      <input id="dateFinVentes" type="date" onchange="afficherStatsVentes()">
+    </div>
+  </div>
+
+  <div class="periode-result-box">
+    <div class="periode-total-line">
+      <span>مجموع الفترة المختارة :</span>
+      <span id="ventePeriodeTotal">0 درهم</span>
+    </div>
+    <div id="listeVentesPeriode" style="margin-top:8px"></div>
+  </div>
+</div>
+</div>
+
+<div id="vente" class="section">
+<div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
+
+<div id="venteActionsBox" class="box">
+<h3>🛒 البيع</h3>
+<button class="btn btn-orange" onclick="bipTap(); startScan('vente')">📷 حل الكاميرا و سكاني</button>
+<input id="codeVenteManuel" placeholder="باركود أو اسم المنتوج..." style="margin-bottom:0" oninput="filtrerSuggestionsVente()" onkeydown="if(event.key==='Enter'){event.preventDefault();ajouterVenteManuel();}">
+<div id="suggestionsVente" class="search-results"></div>
+</div>
+
+<div id="ventePanierBox" class="box">
+<h3>🧾 سلة الكليان</h3>
+<div id="compteurScan" class="compteur">📷 السكانات : 0 | 🛒 السلة : 0</div>
+
+<div id="panier"></div>
+<div class="total">المجموع : <span id="totalVente">0 درهم</span></div>
+<button class="btn btn-green" onclick="demarrerSortieMarchandise()">📤 خرج السلعة</button>
+
+<div id="choixPaiementBox" class="choix-paiement">
+  <h3 style="margin-bottom:6px">✅ خرجات السلعة — واش كريدي ولا خالص ؟</h3>
+  <small style="color:#555;display:block;margin-bottom:8px">المجموع ديال هاد الخرجة : <b id="montantSortieLabel">0 درهم</b></small>
+  <div class="choix-btns">
+    <button type="button" class="btn btn-green" style="flex:1;margin:0" onclick="validerPaiementCash()">💵 خالص (كاش)</button>
+    <button type="button" class="btn btn-orange" style="flex:1;margin:0" onclick="bipTap(); ouvrirFormulaireCredit()">📒 كريدي</button>
+  </div>
+</div>
+
+<div id="formulaireCreditBox" class="credit-form">
+  <h3 style="margin-bottom:8px">📒 معلومات الكليان — كريدي</h3>
+  <label>اختار كليان من اللائحة *</label>
+  <select id="selectClientCredit" onchange="gererSelectionClientCredit()">
+    <option value="">-- اختار كليان --</option>
+    <option value="__NEW__">➕ زيد كليان جديد...</option>
+  </select>
+  <div id="nouveauClientBox" style="display:none">
+    <label>اسم الكليان الجديد *</label>
+    <input id="creditNomClient" placeholder="مثال: سي محمد / أمينة">
+  </div>
+  <label>السلعة اللي خدا داك نهار *</label>
+  <textarea id="creditArticles" rows="2" placeholder="السلعة والكمية ديال داك نهار"></textarea>
+  <label>شحال خلص اليوم (درهم)</label>
+  <input id="creditPaye" type="number" step="any" min="0" value="0" oninput="majCalculCredit()">
+  <div class="credit-resume">
+    <div><span>المجموع الكلي :</span><span id="creditTotalAff">0 درهم</span></div>
+    <div><span>اللي خلص اليوم :</span><span id="creditPayeAff">0 درهم</span></div>
+    <div style="color:#E63946"><span>شحال بقا ليه :</span><span id="creditResteAff">0 درهم</span></div>
+  </div>
+  <button type="button" class="btn btn-green" onclick="enregistrerCredit()">💾 سجل الكريدي</button>
+  <button type="button" class="btn btn-grey" onclick="bipTap(); annulerCredit()">❌ إلغاء</button>
+</div>
+</div>
+</div>
+
+<div id="credits" class="section">
+<div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
+<div class="box">
+<h3>📒 سجل الكريديات ديال الكليان</h3>
+<div id="totalCreditsResume" style="background:#FFF3CD;padding:12px;border-radius:10px;font-weight:900;text-align:center;margin-bottom:10px;font-size:16px">مجموع الكريدي الباقي : 0 درهم</div>
+<label>قلب على كليان من اللائحة</label>
+<select id="filtreSelectClient" onchange="bipTap(); afficherCredits()">
+  <option value="">كل الكليان</option>
+</select>
+<div style="display:flex;gap:6px">
+  <input id="rechercheCredit" placeholder="🔍 ولا قلب بالسمية / السلعة..." oninput="afficherCredits()" style="flex:1;margin-bottom:8px">
+  <button type="button" class="btn btn-blue" style="width:125px;margin-bottom:8px" onclick="bipTap(); ajouterClientDirect()">➕ زيد كليان</button>
+</div>
+<div id="listeCredits"></div>
+</div>
+</div>
+<div id="achat" class="section">
+<div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
+<div id="achatActionsBox" class="box">
+<h3>📥 الشراء</h3>
+<button class="btn btn-orange" onclick="bipTap(); startScan('achat')">📷 حل الكاميرا و سكاني</button>
+<button class="btn btn-blue" onclick="bipTap(); creerSansCodeBarre()">➕ منتج بلا باركود (مع تصويرة)</button>
+
+<label>🔍 بحث بالباركود أو اسم المنتوج</label>
+<div style="display:flex;gap:6px;margin-bottom:4px">
+  <input id="codeAchatManuel" placeholder="باركود أو اسم المنتوج..." style="flex:1;margin-bottom:0" oninput="filtrerSuggestionsAchat()" onkeydown="if(event.key==='Enter'){event.preventDefault();preparerAchatManuel();}">
+  <button class="btn btn-black" style="width:90px;margin-bottom:0" onclick="preparerAchatManuel()">واخا</button>
+</div>
+<div id="suggestionsAchat" class="search-results"></div>
+
+<label style="margin-top:6px">📦 الكمية المشتراة</label>
+<input id="qteAchatCourante" type="number" min="1" step="1" placeholder="دخل الكمية المشتراة...">
+<button type="button" class="btn btn-green" onclick="validerEntreeQuantiteStock()">📥 دخل الكمية للسطوك</button>
+</div>
+
+<div class="box" id="formProduit" style="display:none">
+<h3>ورقة المنتج</h3>
+<label>الباركود / الكود</label><input id="fCode" readonly>
+<label>اسم المنتج *</label><input id="fNom" placeholder="مثال: فرماج الحمد أو خبز">
+<label>📷 تصويرة المنتج (باش تعقل عليه)</label>
+<button type="button" class="btn btn-blue" onclick="bipTap(); startScan('photo_produit')">📸 صور المنتج بالكاميرا</button>
+<div id="fPhotoPreviewBox" class="photo-preview-box" style="display:none">
+  <img id="fPhotoPreview" src="" alt="صورة المنتج"><br>
+  <button type="button" class="btn btn-grey" style="margin-top:6px;padding:8px;font-size:12px" onclick="bipTap(); supprimerPhotoForm()">🗑️ حيد التصويرة</button>
+</div>
+<label>💰 ثمن الشراء *</label><input id="fPrixAchat" type="number" step="any" placeholder="مثال: 9">
+<label>🏷️ ثمن البيع *</label><input id="fPrix" type="number" step="any" placeholder="مثال: 12">
+<label>الكمية *</label><input id="fQte" type="number">
+<div id="previewBenefice" style="background:#E6F7ED;padding:10px;border-radius:10px;font-weight:800;text-align:center;margin-bottom:8px"></div>
+<button class="btn btn-green" onclick="enregistrerProduit()">💾 سجل</button>
+<button class="btn btn-grey" onclick="bipTap(); fermerFormProduit()">❌ حبس</button>
+</div>
+
+<div id="achatSessionBox" class="box">
+<h3>📋 آخر المنتجات اللي زدتيهم</h3>
+<div id="listeAchatRapide"></div>
+</div>
+</div>
+
+<div id="stock" class="section">
+<div class="topbar"><button class="home-btn" onclick="bipTap(); showTab('home')">🏠 الرئيسية (رجوع)</button></div>
+<div class="box-total">
+<h3>💰 المبلغ الإجمالي ديال السطوك</h3>
+<div class="ligne"><span>🛒 بالشراء</span><span id="totalAchat">0 درهم</span></div>
+<div class="ligne"><span>🏷️ بالبيع</span><span id="totalVenteStock">0 درهم</span></div>
+<div class="ligne"><span>📦 عدد الوحدات</span><span id="totalUnites">0 وحدة</span></div>
+<div class="ligne"><span>💚 الربح المتوقع</span><span id="totalBenefice">0 درهم</span></div>
+</div>
+<div id="alerteRuptureStockBox" class="alert-rupture-box">
+  <h3>🚨 تنبيه قبل نفاذ السطوك (حسب وتيرة البيع)</h3>
+  <div id="listeAlerteRupture"></div>
+</div>
+<div class="box"><h3>🔍 قلب على منتج</h3><input id="recherche" placeholder="الاسم ولا الباركود..." oninput="afficherStock()"></div>
+<div class="box"><h3>📦 المخزون ديال كل منتج</h3><div id="listeStock"></div></div>
+<div class="box">
+<h3>📥 استرجاع نسخة</h3>
+<input type="file" id="importBackup" accept=".json" style="display:none" onchange="importerDonnees(this)">
+<button class="btn btn-grey" onclick="bipTap(); document.getElementById('importBackup').click()">📥 استرجاع نسخة</button>
+</div>
+<div class="box"><button class="btn btn-red" onclick="bipTap(); resetTout()">⚠️ مسح كلشي</button></div>
+</div>
+
+<div id="footerBackupWrap" class="footer-backup-wrap">
+  <button type="button" class="footer-backup-btn" onclick="exporterDonnees()">📄 نسخة JSON</button>
+</div>
+
+<script>
+const NOM_BOUTIQUE_CLIENT = "بقالة مصطفى سعادة";
+const REF_CLIENT = "MUSTAPHA-SAADA-01";
+const DUREE_ESSAI_JOURS = 7;
+const CODE_SECRET_CLIENT = "MUSTAPHA-SAADA-2026-01";
+
+const DUREE_ESSAI_MS = DUREE_ESSAI_JOURS * 24 * 60 * 60 * 1000;
+function cleClient(k){ return `epicerie_${REF_CLIENT}_${k}`; }
+const CLE_LICENCE_CLIENT = cleClient("activee");
+
+function lire(k){ try{ return JSON.parse(localStorage.getItem(cleClient(k))||'[]'); }catch(e){ return []; } }
+function ecrire(k,v){ try{ localStorage.setItem(cleClient(k),v); }catch(e){ bipErreur(); alert('⚠️ الذاكرة عامرة، دير نسخة JSON ونقص التصاور الكبار'); } }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function r2(n){ return Math.round(n*100)/100; }
+
+let produits = lire('produits');
+let ventes = lire('ventes');
+let credits = lire('credits');
+let clientsListe = lire('clients');
+let panier = []; let codeProduitActuelVente = '';
+let modeScan='vente'; let modeReconnaissancePhoto='vente'; let audioCtx=null;
+let dernierCode=''; let dernierTemps=0; const DELAI=1000;
+let compteurScans=parseInt(localStorage.getItem(cleClient('compteur_scans'))||'0')||0; let scansClient=0;
+let streamActif=null; let scanEnCours=false; let rafId=null; let detector=null;
+let derniereAnalysePhotoAuto=0; let photoAnalyseEnCours=false;
+let achatSession = [];
+let dernierProduitAchatCode = '';
+let photoCouranteForm = '';
+let sortieEnCours = null;
+let retourApresEnregistrement = 'achat';
+let vueFocalisee = 'normal';
+let ongletActuel = 'home';
+let pousserEtatReglage = false;
+
+produits.forEach(p=>{
+  if(p.prixAchat==null || p.prixAchat==0){ p.prixAchat = r2(p.prix*0.7); }
+  if(p.sansCode==null) p.sansCode = String(p.code).startsWith('SANS-');
+  if(p.photo==null) p.photo = '';
+});
+  function formaterDateInput(dt){
   let y = dt.getFullYear();
   let m = String(dt.getMonth()+1).padStart(2,'0');
   let d = String(dt.getDate()).padStart(2,'0');
